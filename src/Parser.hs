@@ -1,0 +1,144 @@
+module Parser where
+
+import Text.Parsec
+import Text.Parsec.String (Parser)
+
+import qualified Text.Parsec.Token as Token
+-- import qualified Text.Parsec as
+
+import Lexer
+import Syntax
+
+---- Parser ----
+
+
+--- High-level Parser
+
+-- top-level parser
+parseClover :: String -> String
+parseClover target = target ++ " parsed!!!!!"
+
+-- Parser test function for cabal repl
+parset :: (Show a) => Parser a -> SourceName -> String -> String
+parset p s i = case (parse p s i) of
+  Right a -> show a
+  Left e -> show "Error"
+
+-- combinated parser
+parseExpr :: Parser Clo
+parseExpr = try parseFloat
+        <|> try parseInt
+        <|> try parseKeyword
+        <|> try parseBool
+        <|> try parseSymbol
+        <|> try parseString
+        <|> parseList
+        <|> parseVector
+
+
+--- Primitive Parser
+
+-- Clover Symbol
+-- a-z, A-Z, 0-9
+parseSymbol :: Parser Clo
+parseSymbol = do
+  x <- letter <|> symbol
+  xs <- many (letter <|> digit <|> symbol)
+  return $ Symbol $ x:xs
+
+-- Clover Keyword
+-- : a-z, A-Z, 0-9
+parseKeyword :: Parser Clo
+parseKeyword = do
+  char ':'
+  x <- noneOf ":"
+  xs <- many1 $ noneOf ['"']
+  return $ Keyword (x:xs)
+
+-- Clover Bool
+-- true, false
+parseBool :: Parser Clo
+parseBool = do
+  x <- string "true" <|> string "false"
+  return $ case x of
+    "true" -> Bool True
+    "false" -> Bool False
+
+-- Clover String
+-- " String "
+parseString :: Parser Clo
+parseString = do
+  char '"'
+  x <- many1 $ (escapedChar <|> noneOf ['"'])
+  char '"'
+  return $ String x
+
+-- Clover Integer
+-- +/- n, n
+parseInt :: Parser Clo
+parseInt = do
+  x <- try integer <|> natural
+  return $ Int x
+
+-- Clover Float
+-- n.m, non-signed
+parseFloat :: Parser Clo
+parseFloat = do
+  x <- float
+  return $ Float x
+
+-- Clover Symbolic
+-- #, !, $, &, |, /, ?, @, ^, _, ~, '
+symbol :: Parser Char
+symbol = oneOf "#!$&|/?@^_~'"
+
+-- Clover Escaped Character
+-- \n, \\, \"
+escapedChar :: Parser Char
+escapedChar = do
+  char '\\'
+  x <- oneOf "\"\\n"
+  return $ case x of
+    'n' -> '\n'
+    _ -> x
+
+-- Clover List
+-- (_ _ _ _ ...)
+parseList :: Parser Clo
+parseList = do
+  char '('
+  x <- sepBy parseExpr spaces
+  char ')'
+  return $ List x
+
+-- Clover Vector
+-- [_ _ _ ...]
+parseVector :: Parser Clo
+parseVector = do
+  char '['
+  x <- sepBy parseExpr spaces
+  char ']'
+  return $ Vector x
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
