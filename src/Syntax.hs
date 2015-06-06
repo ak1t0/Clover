@@ -14,7 +14,7 @@ showClo :: Clo -> String
 showClo (Int i) = show i
 showClo (Float f) = show f
 showClo (Symbol s) = s
-showClo (Keyword s) = s
+showClo (Keyword s) = ":" ++ s
 showClo (String s) = show s
 showClo (List l) = "(" ++ unwords (map showClo l) ++ ")"
 showClo (Vector v) = "[" ++ unwords (map showClo v) ++ "]"

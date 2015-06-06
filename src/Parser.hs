@@ -16,7 +16,7 @@ import Syntax
 
 -- top-level parser
 parseClover :: String -> String
-parseClover target = target ++ " parsed!!!!!"
+parseClover target = (parset parseExpr "target" target) ++ " parsed!!!!!"
 
 -- Parser test function for cabal repl
 parset :: (Show a) => Parser a -> SourceName -> String -> String
@@ -42,8 +42,8 @@ parseExpr = try parseFloat
 -- a-z, A-Z, 0-9
 parseSymbol :: Parser Clo
 parseSymbol = do
-  x <- letter <|> symbol
-  xs <- many (letter <|> digit <|> symbol)
+  x <- letter <|> symbolic
+  xs <- many (letter <|> digit <|> symbolic)
   return $ Symbol $ x:xs
 
 -- Clover Keyword
@@ -51,8 +51,8 @@ parseSymbol = do
 parseKeyword :: Parser Clo
 parseKeyword = do
   char ':'
-  x <- noneOf ":"
-  xs <- many1 $ noneOf ['"']
+  x <- letter <|> symbolic
+  xs <- many (letter <|> digit <|> symbolic)
   return $ Keyword (x:xs)
 
 -- Clover Bool
@@ -89,8 +89,8 @@ parseFloat = do
 
 -- Clover Symbolic
 -- #, !, $, &, |, /, ?, @, ^, _, ~, '
-symbol :: Parser Char
-symbol = oneOf "#!$&|/?@^_~'"
+symbolic :: Parser Char
+symbolic = oneOf "#!$&|/?@^_~'"
 
 -- Clover Escaped Character
 -- \n, \\, \"
