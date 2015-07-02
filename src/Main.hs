@@ -3,6 +3,7 @@ import System.Console.Haskeline
 import Syntax
 import Lexer
 import Parser
+import Translate
 
 main :: IO ()
 main = runInputT defaultSettings loop
