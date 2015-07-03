@@ -1,4 +1,5 @@
 import System.Console.Haskeline
+import Control.Monad.IO.Class
 
 import Syntax
 import Lexer
@@ -14,4 +15,9 @@ main = runInputT defaultSettings loop
       case maybeinput of
         Nothing -> outputStrLn "Goodbye."
         Just "quit" -> outputStrLn "Goodbye."
-        Just input -> (outputStrLn $ "Input was: " ++ (parseClover input)) >> loop
+        Just input -> do
+          x <- liftIO $ translate input
+          outputStrLn x
+          loop
+          --return expression
+        -- (outputStrLn $ "Input was: " ++ (parseClover input)) >> loop
