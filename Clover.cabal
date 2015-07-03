@@ -59,7 +59,8 @@ executable Clover
   -- Other library packages from which modules are imported.
   build-depends:       base >=4.8 && <4.9 ,
                        haskeline ,
-                       parsec
+                       parsec ,
+                       transformers
 
   -- Directories containing source files.
   hs-source-dirs:      src
