@@ -3,8 +3,20 @@ module Translate where
 import Syntax
 import Parser
 
---transCloToString :: Clo -> String
---transCloToString
+translate :: String -> IO String
+translate input =
+  writeTransedFile "t.go" $ transClo $ parsePrim "(defn f-name [x y] (plus x y))"
+
+transClo :: Either a Clo -> String
+transClo r = case r of
+  Right a -> transCloToString a
+  Left b -> "Clo source is not correct!!"
+
+transCloToString :: Clo -> String
+transCloToString o = case o of
+  List [Symbol "defn", fname, args, body]
+    -> "defn" ++ " " ++ (show fname) ++ " " ++ (show args) ++ " "++ (show body)
+  _ -> "not math!"
 
 writeTransedFile :: FilePath -> String -> IO String
 writeTransedFile path target = do
