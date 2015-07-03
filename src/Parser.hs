@@ -14,15 +14,19 @@ import Syntax
 
 --- High-level Parser
 
--- top-level parser
+-- top-level parser for Main
 parseClover :: String -> String
-parseClover target = (parset parseExpr "target" target) ++ " parsed!!!!!"
+parseClover target = (parseCore parseExpr "target" target) ++ " parsed!!!!!"
 
 -- Parser test function for cabal repl
-parset :: (Show a) => Parser a -> SourceName -> String -> String
-parset p s i = case (parse p s i) of
+parseCore :: (Show a) => Parser a -> SourceName -> String -> String
+parseCore p s i = case (parse p s i) of
   Right a -> show a
   Left e -> show "Error"
+
+-- for Translate
+parsePrim :: String -> Either ParseError Clo
+parsePrim i = parse parseExpr "target" i
 
 -- combinated parser
 parseExpr :: Parser Clo
@@ -88,9 +92,9 @@ parseFloat = do
   return $ Float x
 
 -- Clover Symbolic
--- #, !, $, &, |, /, ?, @, ^, _, ~, '
+-- #, !, $, &, |, /, ?, @, ^, _, ~, ', -
 symbolic :: Parser Char
-symbolic = oneOf "#!$&|/?@^_~'"
+symbolic = oneOf "#!$&|/?@^_~'-"
 
 -- Clover Escaped Character
 -- \n, \\, \"
@@ -119,26 +123,3 @@ parseVector = do
   x <- sepBy parseExpr spaces
   char ']'
   return $ Vector x
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
