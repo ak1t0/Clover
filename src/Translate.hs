@@ -7,6 +7,10 @@ translate :: String -> IO String
 translate input =
   writeTransedFile "t.go" $ transClo $ parsePrim "(defn f-name [x y] (plus x y))"
 
+translatei :: String -> IO String
+translatei input =
+  writeTransedFilei "repl.go" $ transClo $ parsePrim "(defn f-name [x y] (plus x y))"
+
 transClo :: Either a Clo -> String
 transClo r = case r of
   Right a -> transCloToString a
@@ -20,5 +24,11 @@ transCloToString o = case o of
 
 writeTransedFile :: FilePath -> String -> IO String
 writeTransedFile path target = do
+  base <- readFile "res/base.go"
+  writeFile path (base ++ target ++ "\n")
+  return "Success!!"
+
+writeTransedFilei :: FilePath -> String -> IO String
+writeTransedFilei path target = do
   appendFile path (target ++ "\n")
   return "Success!!"

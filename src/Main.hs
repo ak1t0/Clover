@@ -16,7 +16,7 @@ main = runInputT defaultSettings loop
         Nothing -> outputStrLn "Goodbye."
         Just "quit" -> outputStrLn "Goodbye."
         Just input -> do
-          x <- liftIO $ translate input
+          x <- liftIO $ translatei input
           outputStrLn x
           loop
           --return expression
