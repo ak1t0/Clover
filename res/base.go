@@ -127,13 +127,9 @@ func tes(x, y interface{}) CloverObj {
 	return Plus(v1, v2)
 }
 
-func generated(x, y CloverObj) CloverObj {
-	return Plus(x, y)
-}
-
 // (defn f-name [x y] (+ x y))
 // to
 // List[Symbol "defn", Symbol "fname", Vector[Symbol "x", Symbol "y"],
 //      List[Symbol "+", Symbol "x", Symbol "y"]
 // ]
-// 
+//
