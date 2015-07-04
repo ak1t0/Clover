@@ -31,7 +31,7 @@ func (s CloverFloat) ShowValue() string {
 func (s CloverBool) ShowValue() string {
 	return fmt.Sprint(s.value)
 }
-
+/*
 func main() {
 	ci := CloverInt{9}
 	c := CloverInt{99}
@@ -45,7 +45,7 @@ func main() {
 	fmt.Println(tes(ci, op).ShowValue())
 	println(generated(c, op))
 }
-
+*/
 func Tes(x, y int) int {
 	return x + y
 }
