@@ -22,7 +22,7 @@ transCloToString o = case o of
   List [Symbol "defn", Symbol "main", args, body]
     -> "func main() {\n\tfmt.Println(\"main!!\")}"
   List [Symbol "defn", fname, args, body]
-    -> baseData
+    -> generateFunc fname args body
   --  -> "defn" ++ " " ++ (show fname) ++ " " ++ (show args) ++ " "++ (show body)
   _ -> "not math!"
 
@@ -41,3 +41,28 @@ writeTransedFilei path target = do
 -- const
 baseData :: String
 baseData = "func generated(x, y CloverObj) CloverObj {\n\treturn Plus(x, y)\n}\n"
+
+
+-- code generation
+generateFunc :: Clo -> Clo -> Clo -> String
+generateFunc fname args body =
+  "func " ++ (takeSymbol fname) ++
+  (generateFuncArgs args) ++ " CloverObj " ++
+  "{}"
+
+generateFuncArgs :: Clo -> String
+generateFuncArgs args = parenter $ generateFuncArgsGen $ takeVector args
+
+generateFuncArgsGen :: [Clo] -> String
+generateFuncArgsGen [] = " CloverObj"
+generateFuncArgsGen [x] = (takeSymbol x) ++ (generateFuncArgsGen [])
+generateFuncArgsGen (x:xs) = (takeSymbol x) ++ ", " ++ (generateFuncArgsGen xs)
+
+parenter :: String -> String
+parenter s = "(" ++ s ++ ")"
+
+takeVector :: Clo -> [Clo]
+takeVector (Vector x) = x
+
+takeSymbol :: Clo -> String
+takeSymbol (Symbol x) = x
