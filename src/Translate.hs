@@ -48,7 +48,7 @@ generateFunc :: Clo -> Clo -> Clo -> String
 generateFunc fname args body =
   "func " ++ (takeSymbol fname) ++
   (generateFuncArgs args) ++ " CloverObj " ++
-  "{}"
+  (generateFuncBody body)
 
 generateFuncArgs :: Clo -> String
 generateFuncArgs args = parenter $ generateFuncArgsGen $ takeVector args
@@ -58,11 +58,36 @@ generateFuncArgsGen [] = " CloverObj"
 generateFuncArgsGen [x] = (takeSymbol x) ++ (generateFuncArgsGen [])
 generateFuncArgsGen (x:xs) = (takeSymbol x) ++ ", " ++ (generateFuncArgsGen xs)
 
+-- List[sy1 sy2 sy3]
+-- sy1(sy2, sy3)
+
+generateFuncBody :: Clo -> String
+generateFuncBody body =
+  "{\n\t" ++
+  "v := " ++ (generateFuncBodyGen (takeList body)) ++ "\n" ++
+  "\t" ++ "return v" ++ "\n" ++
+  "}"
+
+generateFuncBodyGen :: [Clo] -> String
+generateFuncBodyGen (x:xs) = takeSymbol x
+
 parenter :: String -> String
 parenter s = "(" ++ s ++ ")"
 
 takeVector :: Clo -> [Clo]
 takeVector (Vector x) = x
 
+takeList :: Clo -> [Clo]
+takeList (List x) = x
+
 takeSymbol :: Clo -> String
 takeSymbol (Symbol x) = x
+
+strClo :: Clo -> String
+strClo (Int i) = show i
+strClo (Float f) = show f
+strClo (Symbol s) = s
+strClo (Keyword s) = ":" ++ s
+strClo (String s) = show s
+strClo (List l) = "(" ++ unwords (map strClo l) ++ ")"
+strClo (Vector v) = "[" ++ unwords (map strClo v) ++ "]"
