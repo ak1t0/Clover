@@ -77,6 +77,7 @@ generateFuncMainBody body =
   "{\n\t" ++ (generateFuncBodyArgs body) ++ "\n" ++ "}"
 
 -- AST in function args to String
+-- 
 generateFuncBodyArgs :: Clo -> String
 generateFuncBodyArgs (Symbol x) = x
 generateFuncBodyArgs (Int x) = "CloverInt{" ++ (show x) ++ "}"
