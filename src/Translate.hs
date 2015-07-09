@@ -19,6 +19,8 @@ transClo r = case r of
 
 transCloToString :: Clo -> String
 transCloToString o = case o of
+  List [Symbol "defn", Symbol "main", args, body]
+    -> generateFuncMain body
   List [Symbol "defn", fname, args, body]
     -> generateFunc fname args body
   --  -> "defn" ++ " " ++ (show fname) ++ " " ++ (show args) ++ " "++ (show body)
@@ -48,6 +50,10 @@ generateFunc fname args body =
   (generateFuncArgs args) ++ " CloverObj " ++
   (generateFuncBody body)
 
+generateFuncMain :: Clo -> String
+generateFuncMain body =
+  "func " ++ "main" ++ "()" ++ " " ++ (generateFuncMainBody body)
+
 generateFuncArgs :: Clo -> String
 generateFuncArgs args = parenter $ generateFuncArgsGen $ takeVector args
 
@@ -66,6 +72,10 @@ generateFuncBody body =
   "\t" ++ "return v" ++ "\n" ++
   "}"
 
+generateFuncMainBody :: Clo -> String
+generateFuncMainBody body =
+  "{\n\t" ++ (generateFuncBodyGen (takeList body)) ++ "\n" ++ "}"
+
 generateFuncBodyGen :: [Clo] -> String
 generateFuncBodyGen (x:xs) = (takeSymbol x) ++ generateFuncBodyArgs xs
 
@@ -73,8 +83,10 @@ generateFuncBodyArgs :: [Clo] -> String
 generateFuncBodyArgs x =
   parenter $ init $ unwords $ map (\x -> (generateFuncBodyArgsGen x) ++ ",") x
 
+-- AST in function args to String
 generateFuncBodyArgsGen :: Clo -> String
 generateFuncBodyArgsGen (Symbol x) = x
+generateFuncBodyArgsGen (Int x) = "CloverInt{" ++ (show x) ++ "}"
 generateFuncBodyArgsGen (List x) = generateFuncBodyGen x
 
 parenter :: String -> String
