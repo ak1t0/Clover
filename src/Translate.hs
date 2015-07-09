@@ -19,8 +19,6 @@ transClo r = case r of
 
 transCloToString :: Clo -> String
 transCloToString o = case o of
-  List [Symbol "defn", Symbol "main", args, body]
-    -> "func main() {\n\tfmt.Println(\"main!!\")}"
   List [Symbol "defn", fname, args, body]
     -> generateFunc fname args body
   --  -> "defn" ++ " " ++ (show fname) ++ " " ++ (show args) ++ " "++ (show body)
@@ -69,7 +67,15 @@ generateFuncBody body =
   "}"
 
 generateFuncBodyGen :: [Clo] -> String
-generateFuncBodyGen (x:xs) = takeSymbol x
+generateFuncBodyGen (x:xs) = (takeSymbol x) ++ generateFuncBodyArgs xs
+
+generateFuncBodyArgs :: [Clo] -> String
+generateFuncBodyArgs x =
+  parenter $ init $ unwords $ map (\x -> (generateFuncBodyArgsGen x) ++ ",") x
+
+generateFuncBodyArgsGen :: Clo -> String
+generateFuncBodyArgsGen (Symbol x) = x
+generateFuncBodyArgsGen (List x) = generateFuncBodyGen x
 
 parenter :: String -> String
 parenter s = "(" ++ s ++ ")"
