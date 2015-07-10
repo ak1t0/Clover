@@ -3,6 +3,8 @@ module Translate where
 import Syntax
 import Parser
 
+import System.Process
+
 translate :: String -> IO String
 translate input =
   writeTransedFile "t.go" $ transClo $ parsePrim input
@@ -10,6 +12,10 @@ translate input =
 translatei :: String -> IO String
 translatei input =
   writeTransedFilei "repl.go" $ transClo $ parsePrim "(defn f-name [x y] (plus x y))"
+
+-- for confirm gorun build and run result
+gorun :: IO String
+gorun = readProcess "go" ["run", "t.go"] []
 
 -- AST translating function
 transClo :: Either a Clo -> String
