@@ -68,36 +68,22 @@ generateFuncArgsGen (x:xs) = (takeSymbol x) ++ ", " ++ (generateFuncArgsGen xs)
 generateFuncBody :: Clo -> String
 generateFuncBody body =
   "{\n\t" ++
-  "v := " ++ (generateFuncBodyGen (takeList body)) ++ "\n" ++
+  "v := " ++ (generateFuncBodyArgs body) ++ "\n" ++
   "\t" ++ "return v" ++ "\n" ++
   "}"
 
 generateFuncMainBody :: Clo -> String
 generateFuncMainBody body =
-  "{\n\t" ++ (generateFuncBodyGen (takeList body)) ++ "\n" ++ "}"
-
-generateFuncBodyGen :: [Clo] -> String
-generateFuncBodyGen (x:xs) = (takeSymbol x) ++ generateFuncBodyArgs xs
-
-generateFuncBodyArgs :: [Clo] -> String
-generateFuncBodyArgs x =
-  parenter $ init $ unwords $ map (\x -> (generateFuncBodyArgsGen x) ++ ",") x
+  "{\n\t" ++ (generateFuncBodyArgs body) ++ "\n" ++ "}"
 
 -- AST in function args to String
-<<<<<<< HEAD
--- 
+--
 generateFuncBodyArgs :: Clo -> String
 generateFuncBodyArgs (Symbol x) = x
 generateFuncBodyArgs (Int x) = "CloverInt{" ++ (show x) ++ "}"
 generateFuncBodyArgs (List (x:xs)) =
   (generateFuncBodyArgs x) ++
   (parenter $ init $ unwords $ map (\x -> (generateFuncBodyArgs x) ++ ",") xs)
-=======
-generateFuncBodyArgsGen :: Clo -> String
-generateFuncBodyArgsGen (Symbol x) = x
-generateFuncBodyArgsGen (Int x) = "CloverInt{" ++ (show x) ++ "}"
-generateFuncBodyArgsGen (List x) = generateFuncBodyGen x
->>>>>>> parent of f5b38ac... modify generateFuncBodyArgs function simply
 
 parenter :: String -> String
 parenter s = "(" ++ s ++ ")"
