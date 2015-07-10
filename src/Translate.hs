@@ -82,6 +82,7 @@ generateFuncBodyArgs :: Clo -> String
 generateFuncBodyArgs (Symbol x) = x
 generateFuncBodyArgs (Int x) = "CloverInt{" ++ (show x) ++ "}"
 generateFuncBodyArgs (Float x) = "CloverFloat{" ++ (show x) ++ "}"
+generateFuncBodyArgs (String x) = "CloverString{" ++ (show x) ++ "}"
 generateFuncBodyArgs (List (x:xs)) =
   (generateFuncBodyArgs x) ++
   (parenter $ init $ unwords $ map (\x -> (generateFuncBodyArgs x) ++ ",") xs)
