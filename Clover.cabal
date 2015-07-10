@@ -60,7 +60,8 @@ executable Clover
   build-depends:       base >=4.8 && <4.9 ,
                        haskeline ,
                        parsec ,
-                       transformers
+                       transformers ,
+                       process
 
   -- Directories containing source files.
   hs-source-dirs:      src
