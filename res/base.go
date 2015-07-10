@@ -16,6 +16,10 @@ type CloverBool struct {
 	value bool
 }
 
+type CloverString struct {
+	value string
+}
+
 type CloverObj interface {
 	ShowValue() string
 }
@@ -29,6 +33,10 @@ func (s CloverFloat) ShowValue() string {
 }
 
 func (s CloverBool) ShowValue() string {
+	return fmt.Sprint(s.value)
+}
+
+func (s CloverString) ShowValue() string {
 	return fmt.Sprint(s.value)
 }
 /*
