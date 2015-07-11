@@ -100,9 +100,33 @@ func Or(o1, o2 CloverObj) CloverObj {
 	return o
 }
 
+func Not(o CloverObj) CloverObj {
+	v := o.(CloverBool).value
+	r := CloverBool{!v}
+	return r
+}
+
 // util
 func println(o CloverObj) {
 	fmt.Println(o.ShowValue())
+}
+
+func Eq(o1, o2 CloverObj) CloverObj {
+	switch o1.(type) {
+		case CloverInt:
+			return CloverBool{(o1.(CloverInt).value == o2.(CloverInt).value)}
+		case CloverFloat:
+			return CloverBool{(o1.(CloverFloat).value == o2.(CloverFloat).value)}
+		case CloverString:
+			return CloverBool{(o1.(CloverString).value == o2.(CloverString).value)}
+		case CloverBool:
+			return CloverBool{(o1.(CloverBool).value == o2.(CloverBool).value)}
+	}
+	return CloverInt{9999}
+}
+
+func Neq(o1, o2 CloverObj) CloverObj {
+	return Not(Eq(o1, o2))
 }
 
 func tes(x, y interface{}) CloverObj {
@@ -111,6 +135,14 @@ func tes(x, y interface{}) CloverObj {
 	return Plus(v1, v2)
 }
 
+/*
+func main() {
+	fmt.Println(Eq(CloverInt{0}, CloverInt{1}))
+	fmt.Println(Eq(CloverBool{}, CloverBool{}))
+	fmt.Println(Neq(CloverString{"aaa"}, CloverString{"sss"}))
+	fmt.Println(Eq(CloverString{"aaa"}, CloverString{"aaa"}))
+}
+*/
 // (defn f-name [x y] (+ x y))
 // to
 // List[Symbol "defn", Symbol "fname", Vector[Symbol "x", Symbol "y"],
