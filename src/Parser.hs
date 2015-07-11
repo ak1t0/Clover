@@ -30,7 +30,8 @@ parsePrim i = parse parseExpr "target" i
 
 -- combinated parser
 parseExpr :: Parser Clo
-parseExpr = try parseFloat
+parseExpr = try parseSymbolicOp
+        <|>try parseFloat
         <|> try parseInt
         <|> try parseKeyword
         <|> try parseBool
@@ -95,6 +96,17 @@ parseFloat = do
 -- #, !, $, &, |, /, ?, @, ^, _, ~, ', -
 symbolic :: Parser Char
 symbolic = oneOf "#!$&|/?@^_~'-"
+
+-- Clover Symbolic Op
+parseSymbolicOp :: Parser Clo
+parseSymbolicOp = do
+  x <- oneOf "+-*"
+  xs <- noneOf "0123456789"
+  return $ case x of
+    '+' -> Symbol "+"
+    '-' -> Symbol "-"
+    '*' -> Symbol "*"
+
 
 -- Clover Escaped Character
 -- \n, \\, \"

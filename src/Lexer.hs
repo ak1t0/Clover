@@ -10,7 +10,7 @@ lexer = Token.makeTokenParser def
   where def = emptyDef {
                 Token.commentLine = ";" ,
                 Token.reservedNames = [] ,
-                Token.reservedOpNames = ["+", "-"]
+                Token.reservedOpNames = []
                 }
 
 -- emptyDef is embedded minimal LanguageDefinition
@@ -37,4 +37,3 @@ identifier = Token.identifier lexer
 -- parse any whitspace
 whitespace :: Parser ()
 whitespace = Token.whiteSpace lexer
-
