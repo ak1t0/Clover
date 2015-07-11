@@ -17,6 +17,9 @@ translatei input =
 gorun :: IO String
 gorun = readProcess "go" ["run", "t.go"] []
 
+gobuild :: String -> String -> IO String
+gobuild file source = readProcess "go" ["build", "-o", file, source] []
+
 -- AST translating function
 transClo :: Either a Clo -> String
 transClo r = case r of
