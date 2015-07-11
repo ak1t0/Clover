@@ -39,24 +39,6 @@ func (s CloverBool) ShowValue() string {
 func (s CloverString) ShowValue() string {
 	return fmt.Sprint(s.value)
 }
-/*
-func main() {
-	ci := CloverInt{9}
-	c := CloverInt{99}
-	op := CloverInt{3}
-	bl := CloverBool{true}
-	fl := CloverFloat{5.55}
-	fmt.Println(ci.ShowValue())
-  fmt.Println(Plus(ci, op).ShowValue())
-	fmt.Println(Or(bl, CloverBool{false}).ShowValue())
-	fmt.Println(Mulf(fl, fl).ShowValue())
-	fmt.Println(tes(ci, op).ShowValue())
-	println(generated(c, op))
-}
-*/
-func Tes(x, y int) int {
-	return x + y
-}
 
 // built-in functions
 // int
@@ -121,12 +103,6 @@ func Or(o1, o2 CloverObj) CloverObj {
 // util
 func println(o CloverObj) {
 	fmt.Println(o.ShowValue())
-}
-
-// user-define
-
-func pluser(x, y CloverObj) CloverObj {
-	return Plus(x, y)
 }
 
 func tes(x, y interface{}) CloverObj {
