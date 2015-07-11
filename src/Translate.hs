@@ -88,13 +88,23 @@ generateFuncMainBody body =
 -- AST in function args to String
 --
 generateFuncBodyArgs :: Clo -> String
-generateFuncBodyArgs (Symbol x) = x
+generateFuncBodyArgs (Symbol x) = symbolToFunc x
 generateFuncBodyArgs (Int x) = "CloverInt{" ++ (show x) ++ "}"
 generateFuncBodyArgs (Float x) = "CloverFloat{" ++ (show x) ++ "}"
 generateFuncBodyArgs (String x) = "CloverString{" ++ (show x) ++ "}"
 generateFuncBodyArgs (List (x:xs)) =
   (generateFuncBodyArgs x) ++
   (parenter $ init $ unwords $ map (\x -> (generateFuncBodyArgs x) ++ ",") xs)
+
+-- for built-in function
+symbolToFunc :: String -> String
+symbolToFunc s = case s of
+    "+" -> "Plus"
+    "-" -> "Minus"
+    "*" -> "Mul"
+    "==" -> "Eq"
+    "not" -> "Not"
+    x -> x
 
 parenter :: String -> String
 parenter s = "(" ++ s ++ ")"
