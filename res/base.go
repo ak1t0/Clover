@@ -9,7 +9,7 @@ type CloverInt struct {
 }
 
 type CloverFloat struct {
-	value float32
+	value float64
 }
 
 type CloverBool struct {
@@ -43,46 +43,51 @@ func (s CloverString) ShowValue() string {
 // built-in functions
 // int
 func Plus(o1, o2 CloverObj) CloverObj {
-	v1 := o1.(CloverInt).value
-	v2 := o2.(CloverInt).value
-	o := CloverInt{v1 + v2}
-	return o
+	b1 := intp(o1)
+	b2 := intp(o2)
+	switch {
+	case b1 && b2:
+		return CloverInt{(o1.(CloverInt).value + o2.(CloverInt).value)}
+	case b1 == b2:
+		return CloverFloat{(o1.(CloverFloat).value + o2.(CloverFloat).value)}
+	case b1:
+		return CloverFloat{(float64(o1.(CloverInt).value) + o2.(CloverFloat).value)}
+	case b2:
+		return CloverFloat{o1.(CloverFloat).value + (float64(o2.(CloverInt).value))}
+	}
+	return CloverString{"Error!"}
 }
 
 func Minus(o1, o2 CloverObj) CloverObj {
-	v1 := o1.(CloverInt).value
-	v2 := o2.(CloverInt).value
-	o := CloverInt{v1 - v2}
-	return o
+	b1 := intp(o1)
+	b2 := intp(o2)
+	switch {
+	case b1 && b2:
+		return CloverInt{(o1.(CloverInt).value - o2.(CloverInt).value)}
+	case b1 == b2:
+		return CloverFloat{(o1.(CloverFloat).value - o2.(CloverFloat).value)}
+	case b1:
+		return CloverFloat{(float64(o1.(CloverInt).value) - o2.(CloverFloat).value)}
+	case b2:
+		return CloverFloat{o1.(CloverFloat).value - (float64(o2.(CloverInt).value))}
+	}
+	return CloverString{"Error!"}
 }
 
 func Mul(o1, o2 CloverObj) CloverObj {
-	v1 := o1.(CloverInt).value
-	v2 := o2.(CloverInt).value
-	o := CloverInt{v1 * v2}
-	return o
-}
-
-// float
-func Plusf(o1, o2 CloverObj) CloverObj {
-	v1 := o1.(CloverFloat).value
-	v2 := o2.(CloverFloat).value
-	o := CloverFloat{v1 + v2}
-	return o
-}
-
-func Minusf(o1, o2 CloverObj) CloverObj {
-	v1 := o1.(CloverFloat).value
-	v2 := o2.(CloverFloat).value
-	o := CloverFloat{v1 - v2}
-	return o
-}
-
-func Mulf(o1, o2 CloverObj) CloverObj {
-	v1 := o1.(CloverFloat).value
-	v2 := o2.(CloverFloat).value
-	o := CloverFloat{v1 * v2}
-	return o
+	b1 := intp(o1)
+	b2 := intp(o2)
+	switch {
+	case b1 && b2:
+		return CloverInt{(o1.(CloverInt).value * o2.(CloverInt).value)}
+	case b1 == b2:
+		return CloverFloat{(o1.(CloverFloat).value * o2.(CloverFloat).value)}
+	case b1:
+		return CloverFloat{(float64(o1.(CloverInt).value) * o2.(CloverFloat).value)}
+	case b2:
+		return CloverFloat{o1.(CloverFloat).value * (float64(o2.(CloverInt).value))}
+	}
+	return CloverString{"Error!"}
 }
 
 // bool
@@ -109,6 +114,15 @@ func Not(o CloverObj) CloverObj {
 // util
 func println(o CloverObj) {
 	fmt.Println(o.ShowValue())
+}
+
+func intp(o1 CloverObj) bool {
+	switch o1.(type) {
+	case CloverInt:
+		return true
+	default:
+		return false
+	}
 }
 
 func Eq(o1, o2 CloverObj) CloverObj {
