@@ -98,6 +98,7 @@ symbolic :: Parser Char
 symbolic = oneOf "#!$&|/?@^_~'-="
 
 -- Clover Symbolic Op
+-- +. *, -
 parseSymbolicOp :: Parser Clo
 parseSymbolicOp = do
   x <- oneOf "+-*"
