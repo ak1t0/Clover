@@ -136,12 +136,77 @@ func Eq(o1, o2 CloverObj) CloverObj {
 		case CloverBool:
 			return CloverBool{(o1.(CloverBool).value == o2.(CloverBool).value)}
 	}
-	return CloverInt{9999}
+	return CloverString{"Error!"}
 }
 
 func Neq(o1, o2 CloverObj) CloverObj {
 	return Not(Eq(o1, o2))
 }
+
+func Gr(o1, o2 CloverObj) CloverObj {
+	b1 := intp(o1)
+	b2 := intp(o2)
+	switch {
+	case b1 && b2:
+		return CloverBool{(o1.(CloverInt).value > o2.(CloverInt).value)}
+	case b1 == b2:
+		return CloverBool{(o1.(CloverFloat).value > o2.(CloverFloat).value)}
+	case b1:
+		return CloverBool{(float64(o1.(CloverInt).value) > o2.(CloverFloat).value)}
+	case b2:
+		return CloverBool{(o1.(CloverFloat).value > float64(o2.(CloverInt).value))}
+	}
+	return CloverString{"Error!"}
+}
+
+func Le(o1, o2 CloverObj) CloverObj {
+	b1 := intp(o1)
+	b2 := intp(o2)
+	switch {
+	case b1 && b2:
+		return CloverBool{(o1.(CloverInt).value < o2.(CloverInt).value)}
+	case b1 == b2:
+		return CloverBool{(o1.(CloverFloat).value < o2.(CloverFloat).value)}
+	case b1:
+		return CloverBool{(float64(o1.(CloverInt).value) < o2.(CloverFloat).value)}
+	case b2:
+		return CloverBool{(o1.(CloverFloat).value < float64(o2.(CloverInt).value))}
+	}
+	return CloverString{"Error!"}
+}
+
+func Gre(o1, o2 CloverObj) CloverObj {
+	b1 := intp(o1)
+	b2 := intp(o2)
+	switch {
+	case b1 && b2:
+		return CloverBool{(o1.(CloverInt).value >= o2.(CloverInt).value)}
+	case b1 == b2:
+		return CloverBool{(o1.(CloverFloat).value >= o2.(CloverFloat).value)}
+	case b1:
+		return CloverBool{(float64(o1.(CloverInt).value) >= o2.(CloverFloat).value)}
+	case b2:
+		return CloverBool{(o1.(CloverFloat).value >= float64(o2.(CloverInt).value))}
+	}
+	return CloverString{"Error!"}
+}
+
+func Lee(o1, o2 CloverObj) CloverObj {
+	b1 := intp(o1)
+	b2 := intp(o2)
+	switch {
+	case b1 && b2:
+		return CloverBool{(o1.(CloverInt).value <= o2.(CloverInt).value)}
+	case b1 == b2:
+		return CloverBool{(o1.(CloverFloat).value <= o2.(CloverFloat).value)}
+	case b1:
+		return CloverBool{(float64(o1.(CloverInt).value) <= o2.(CloverFloat).value)}
+	case b2:
+		return CloverBool{(o1.(CloverFloat).value <= float64(o2.(CloverInt).value))}
+	}
+	return CloverString{"Error!"}
+}
+
 
 func tes(x, y interface{}) CloverObj {
 	v1 := x.(CloverInt)
