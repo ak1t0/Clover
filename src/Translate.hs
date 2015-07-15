@@ -99,6 +99,10 @@ symbolToFunc s = case s of
     "*" -> "Mul"
     "==" -> "Eq"
     "not" -> "Not"
+    ">" -> "Gr"
+    "<" -> "Le"
+    ">=" -> "Gre"
+    "<=" -> "Lee"
     x -> x
 
 parenter :: String -> String
