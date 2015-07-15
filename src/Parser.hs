@@ -98,7 +98,7 @@ parseFloat = do
 -- Clover Symbolic
 -- #, !, $, &, |, /, ?, @, ^, _, ~, ', -, =
 symbolic :: Parser Char
-symbolic = oneOf "#!$&|/?@^_~'-="
+symbolic = oneOf "#!$&|/?@^_~'-=<>"
 
 -- Clover Symbolic Op
 -- +. *, -
