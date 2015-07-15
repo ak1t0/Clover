@@ -86,11 +86,14 @@ parseInt = do
   return $ Int x
 
 -- Clover Float
--- n.m, non-signed
+-- n.m, non-signed, signed
 parseFloat :: Parser Clo
 parseFloat = do
+  s <- many $ char '-'
   x <- float
-  return $ Float x
+  return $ case s of
+    [] -> Float x
+    _ -> Float (-x)
 
 -- Clover Symbolic
 -- #, !, $, &, |, /, ?, @, ^, _, ~, ', -, =
