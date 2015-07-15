@@ -47,11 +47,6 @@ writeTransedFilei path target = do
   appendFile path (target ++ "\n")
   return "Success!!"
 
--- const
-baseData :: String
-baseData = "func generated(x, y CloverObj) CloverObj {\n\treturn Plus(x, y)\n}\n"
-
-
 -- code generation
 generateFunc :: Clo -> Clo -> Clo -> String
 generateFunc fname args body =
