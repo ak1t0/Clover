@@ -87,9 +87,16 @@ generateFuncBodyArgs (Symbol x) = symbolToFunc x
 generateFuncBodyArgs (Int x) = "CloverInt{" ++ (show x) ++ "}"
 generateFuncBodyArgs (Float x) = "CloverFloat{" ++ (show x) ++ "}"
 generateFuncBodyArgs (String x) = "CloverString{" ++ (show x) ++ "}"
+generateFuncBodyArgs (List ((Symbol "if"):xs)) = "if"
 generateFuncBodyArgs (List (x:xs)) =
   (generateFuncBodyArgs x) ++
   (parenter $ init $ unwords $ map (\x -> (generateFuncBodyArgs x) ++ ",") xs)
+
+generateIfFunc :: Clo -> String
+generateIfFunc x = x
+  where b = head x
+        t = head $ tail x
+        f = last x
 
 -- for built-in function
 symbolToFunc :: String -> String
