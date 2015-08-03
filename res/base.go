@@ -42,7 +42,9 @@ func (s CloverString) ShowValue() string {
 
 // built-in functions
 // int
-func Plus(o1, o2 CloverObj) CloverObj {
+func Plus(objs ...CloverObj) CloverObj {
+	o1 := objs[0]
+	o2 := objs[1]
 	b1 := intp(o1)
 	b2 := intp(o2)
 	switch {
@@ -58,7 +60,9 @@ func Plus(o1, o2 CloverObj) CloverObj {
 	return CloverString{"Error!"}
 }
 
-func Minus(o1, o2 CloverObj) CloverObj {
+func Minus(objs ...CloverObj) CloverObj {
+	o1 := objs[0]
+	o2 := objs[1]
 	b1 := intp(o1)
 	b2 := intp(o2)
 	switch {
@@ -74,7 +78,9 @@ func Minus(o1, o2 CloverObj) CloverObj {
 	return CloverString{"Error!"}
 }
 
-func Mul(o1, o2 CloverObj) CloverObj {
+func Mul(objs ...CloverObj) CloverObj {
+	o1 := objs[0]
+	o2 := objs[1]
 	b1 := intp(o1)
 	b2 := intp(o2)
 	switch {
@@ -91,28 +97,34 @@ func Mul(o1, o2 CloverObj) CloverObj {
 }
 
 // bool
-func And(o1, o2 CloverObj) CloverObj {
+func And(objs ...CloverObj) CloverObj {
+	o1 := objs[0]
+	o2 := objs[1]
 	v1 := o1.(CloverBool).value
 	v2 := o2.(CloverBool).value
 	o := CloverBool{v1 && v2}
 	return o
 }
 
-func Or(o1, o2 CloverObj) CloverObj {
+func Or(objs ...CloverObj) CloverObj {
+	o1 := objs[0]
+	o2 := objs[1]
 	v1 := o1.(CloverBool).value
 	v2 := o2.(CloverBool).value
 	o := CloverBool{v1 || v2}
 	return o
 }
 
-func Not(o CloverObj) CloverObj {
+func Not(objs ...CloverObj) CloverObj {
+	o := objs[0]
 	v := o.(CloverBool).value
 	r := CloverBool{!v}
 	return r
 }
 
 // util
-func println(o CloverObj) {
+func println(objs ...CloverObj) {
+	o := objs[0]
 	fmt.Println(o.ShowValue())
 }
 
@@ -125,7 +137,9 @@ func intp(o1 CloverObj) bool {
 	}
 }
 
-func Eq(o1, o2 CloverObj) CloverObj {
+func Eq(objs ...CloverObj) CloverObj {
+	o1 := objs[0]
+	o2 := objs[1]
 	switch o1.(type) {
 		case CloverInt:
 			return CloverBool{(o1.(CloverInt).value == o2.(CloverInt).value)}
@@ -139,11 +153,15 @@ func Eq(o1, o2 CloverObj) CloverObj {
 	return CloverString{"Error!"}
 }
 
-func Neq(o1, o2 CloverObj) CloverObj {
+func Neq(objs ...CloverObj) CloverObj {
+	o1 := objs[0]
+	o2 := objs[1]
 	return Not(Eq(o1, o2))
 }
 
-func Gr(o1, o2 CloverObj) CloverObj {
+func Gr(objs ...CloverObj) CloverObj {
+	o1 := objs[0]
+	o2 := objs[1]
 	b1 := intp(o1)
 	b2 := intp(o2)
 	switch {
@@ -159,7 +177,9 @@ func Gr(o1, o2 CloverObj) CloverObj {
 	return CloverString{"Error!"}
 }
 
-func Le(o1, o2 CloverObj) CloverObj {
+func Le(objs ...CloverObj) CloverObj {
+	o1 := objs[0]
+	o2 := objs[1]
 	b1 := intp(o1)
 	b2 := intp(o2)
 	switch {
@@ -175,7 +195,9 @@ func Le(o1, o2 CloverObj) CloverObj {
 	return CloverString{"Error!"}
 }
 
-func Gre(o1, o2 CloverObj) CloverObj {
+func Gre(objs ...CloverObj) CloverObj {
+	o1 := objs[0]
+	o2 := objs[1]
 	b1 := intp(o1)
 	b2 := intp(o2)
 	switch {
@@ -191,7 +213,9 @@ func Gre(o1, o2 CloverObj) CloverObj {
 	return CloverString{"Error!"}
 }
 
-func Lee(o1, o2 CloverObj) CloverObj {
+func Lee(objs ...CloverObj) CloverObj {
+	o1 := objs[0]
+	o2 := objs[1]
 	b1 := intp(o1)
 	b2 := intp(o2)
 	switch {
@@ -212,6 +236,10 @@ func tes(x, y interface{}) CloverObj {
 	v1 := x.(CloverInt)
 	v2 := y.(CloverInt)
 	return Plus(v1, v2)
+}
+
+func If(b CloverBool, t, f func(...CloverObj) CloverObj) CloverObj {
+	return CloverBool{true}
 }
 
 /*
