@@ -93,10 +93,10 @@ generateFuncBodyArgs (List (x:xs)) =
   (parenter $ init $ unwords $ map (\x -> (generateFuncBodyArgs x) ++ ",") xs)
 
 generateIfFunc :: Clo -> String
-generateIfFunc x = x
-  where b = head x
-        t = head $ tail x
-        f = last x
+generateIfFunc x = "x"
+--  where b = head x
+--        t = head $ tail x
+--        f = last x
 
 -- for built-in function
 symbolToFunc :: String -> String
