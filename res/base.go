@@ -43,8 +43,19 @@ func (s CloverString) ShowValue() string {
 // built-in functions
 // int
 func Plus(objs ...CloverObj) CloverObj {
-	o1 := objs[0]
-	o2 := objs[1]
+	init := CloverInt{0}
+	var sum CloverObj
+	for i, v := range objs {
+		if i == 0 {
+			sum = pluser(init, v)
+		} else {
+		sum = pluser(sum, v)
+		}
+	}
+	return sum
+}
+
+func pluser(o1, o2 CloverObj) CloverObj {
 	b1 := intp(o1)
 	b2 := intp(o2)
 	switch {
@@ -61,8 +72,19 @@ func Plus(objs ...CloverObj) CloverObj {
 }
 
 func Minus(objs ...CloverObj) CloverObj {
-	o1 := objs[0]
-	o2 := objs[1]
+	init := CloverInt{0}
+	var sum CloverObj
+	for i, v := range objs {
+		if i == 0 {
+			sum = minuser(init, v)
+		} else {
+		sum = minuser(sum, v)
+		}
+	}
+	return sum
+}
+
+func minuser(o1, o2 CloverObj) CloverObj {
 	b1 := intp(o1)
 	b2 := intp(o2)
 	switch {
@@ -79,8 +101,19 @@ func Minus(objs ...CloverObj) CloverObj {
 }
 
 func Mul(objs ...CloverObj) CloverObj {
-	o1 := objs[0]
-	o2 := objs[1]
+	init := CloverInt{1}
+	var sum CloverObj
+	for i, v := range objs {
+		if i == 0 {
+			sum = muler(init, v)
+		} else {
+		sum = muler(sum, v)
+		}
+	}
+	return sum
+}
+
+func muler(o1, o2 CloverObj) CloverObj {
 	b1 := intp(o1)
 	b2 := intp(o2)
 	switch {
@@ -124,8 +157,9 @@ func Not(objs ...CloverObj) CloverObj {
 
 // util
 func println(objs ...CloverObj) {
-	o := objs[0]
-	fmt.Println(o.ShowValue())
+	for _, v := range objs {
+		fmt.Println(v.ShowValue())
+		}
 }
 
 func intp(o1 CloverObj) bool {
