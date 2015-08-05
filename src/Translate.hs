@@ -51,28 +51,23 @@ writeTransedFilei path target = do
 -- code generation
 generateFunc :: Clo -> Clo -> Clo -> String
 generateFunc fname args body =
-  "func " ++ (takeSymbol fname) ++
-  (generateFuncArgs args) ++ " CloverObj " ++
-  (generateFuncBody body)
+  "func " ++ (takeSymbol fname) ++ "(objs ...CloverObj) CloverObj " ++
+  (generateFuncBody args body)
 
 generateFuncMain :: Clo -> String
 generateFuncMain body =
   "func " ++ "main" ++ "()" ++ " " ++ (generateFuncMainBody body)
 
 generateFuncArgs :: Clo -> String
-generateFuncArgs args = parenter $ generateFuncArgsGen $ takeVector args
+generateFuncArgs args =
+  foldr (++) "" $
+  map (++ "]\n\t") $ addIndexToEnd $ map (++ " := objs[") $
+  map takeSymbol $ takeVector args
 
-generateFuncArgsGen :: [Clo] -> String
-generateFuncArgsGen [] = " CloverObj"
-generateFuncArgsGen [x] = (takeSymbol x) ++ (generateFuncArgsGen [])
-generateFuncArgsGen (x:xs) = (takeSymbol x) ++ ", " ++ (generateFuncArgsGen xs)
-
--- List[sy1 sy2 sy3]
--- sy1(sy2, sy3)
-
-generateFuncBody :: Clo -> String
-generateFuncBody body =
+generateFuncBody :: Clo -> Clo -> String
+generateFuncBody args body =
   "{\n\t" ++
+  generateFuncArgs args ++
   "v := " ++ (generateFuncBodyArgs body) ++ "\n" ++
   "\t" ++ "return v" ++ "\n" ++
   "}"
@@ -118,6 +113,13 @@ symbolToFunc s = case s of
 
 parenter :: String -> String
 parenter s = "(" ++ s ++ ")"
+
+addIndexToEnd :: [String] -> [String]
+addIndexToEnd strs = interjoin strs (map show [0..(length(strs) - 1)])
+
+interjoin :: [String] -> [String] -> [String]
+interjoin [] [] = []
+interjoin (x:xs) (y:ys) = [x ++ y] ++ (interjoin xs ys)
 
 takeVector :: Clo -> [Clo]
 takeVector (Vector x) = x
