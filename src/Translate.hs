@@ -3,6 +3,7 @@ module Translate where
 import Syntax
 import Parser
 
+import Data.Char
 import System.Process
 
 translate :: String -> IO String
@@ -84,6 +85,7 @@ generateFuncMainBody body =
 --
 generateFuncBodyArgs :: Clo -> String
 generateFuncBodyArgs (Symbol x) = symbolToFunc x
+generateFuncBodyArgs (Bool x) = "CloverBool{" ++ (map toLower (show x)) ++ "}"
 generateFuncBodyArgs (Int x) = "CloverInt{" ++ (show x) ++ "}"
 generateFuncBodyArgs (Float x) = "CloverFloat{" ++ (show x) ++ "}"
 generateFuncBodyArgs (String x) = "CloverString{" ++ (show x) ++ "}"
@@ -106,6 +108,8 @@ symbolToFunc s = case s of
     "*" -> "Mul"
     "==" -> "Eq"
     "not" -> "Not"
+    "and" -> "And"
+    "or" -> "Or"
     ">" -> "Gr"
     "<" -> "Le"
     ">=" -> "Gre"
