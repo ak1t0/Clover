@@ -183,6 +183,15 @@ func intp(o1 CloverObj) bool {
 	}
 }
 
+func strp(o1 CloverObj) bool {
+	switch o1.(type) {
+	case CloverString:
+		return true
+	default:
+		return false
+	}
+}
+
 func Eq(objs ...CloverObj) CloverObj {
   res := true
 	init := objs[0]
@@ -215,75 +224,145 @@ func Neq(objs ...CloverObj) CloverObj {
 }
 
 func Gr(objs ...CloverObj) CloverObj {
-	o1 := objs[0]
-	o2 := objs[1]
-	b1 := intp(o1)
-	b2 := intp(o2)
-	switch {
-	case b1 && b2:
-		return CloverBool{(o1.(CloverInt).value > o2.(CloverInt).value)}
-	case b1 == b2:
-		return CloverBool{(o1.(CloverFloat).value > o2.(CloverFloat).value)}
-	case b1:
-		return CloverBool{(float64(o1.(CloverInt).value) > o2.(CloverFloat).value)}
-	case b2:
-		return CloverBool{(o1.(CloverFloat).value > float64(o2.(CloverInt).value))}
+	res := true
+	for i, v := range objs {
+		if !res {
+			return CloverBool{false}
+		}
+		if i < len(objs) - 1 {
+			res = grer(v, objs[i+1])
+		} else {
+			return CloverBool{res}
+		}
 	}
 	return CloverString{"Error!"}
+}
+
+func grer(o1, o2 CloverObj) bool {
+	b1 := intp(o1)
+	b2 := intp(o2)
+	b3 := strp(o1)
+	b4 := strp(o2)
+	switch {
+	case b1 && b2:
+		return (o1.(CloverInt).value > o2.(CloverInt).value)
+	case b1 == b2:
+		return (o1.(CloverFloat).value > o2.(CloverFloat).value)
+	case b1:
+		return (float64(o1.(CloverInt).value) > o2.(CloverFloat).value)
+	case b2:
+		return (o1.(CloverFloat).value > float64(o2.(CloverInt).value))
+	case b3 && b4:
+		return (o1.(CloverString).value > (o2.(CloverString).value))
+	}
+	return false
 }
 
 func Le(objs ...CloverObj) CloverObj {
-	o1 := objs[0]
-	o2 := objs[1]
-	b1 := intp(o1)
-	b2 := intp(o2)
-	switch {
-	case b1 && b2:
-		return CloverBool{(o1.(CloverInt).value < o2.(CloverInt).value)}
-	case b1 == b2:
-		return CloverBool{(o1.(CloverFloat).value < o2.(CloverFloat).value)}
-	case b1:
-		return CloverBool{(float64(o1.(CloverInt).value) < o2.(CloverFloat).value)}
-	case b2:
-		return CloverBool{(o1.(CloverFloat).value < float64(o2.(CloverInt).value))}
+	res := true
+	for i, v := range objs {
+		if !res {
+			return CloverBool{false}
+		}
+		if i < len(objs) - 1 {
+			res = leer(v, objs[i+1])
+		} else {
+			return CloverBool{res}
+		}
 	}
 	return CloverString{"Error!"}
 }
 
-func Gre(objs ...CloverObj) CloverObj {
-	o1 := objs[0]
-	o2 := objs[1]
+func leer(o1, o2 CloverObj) bool {
 	b1 := intp(o1)
 	b2 := intp(o2)
+	b3 := strp(o1)
+	b4 := strp(o2)
 	switch {
 	case b1 && b2:
-		return CloverBool{(o1.(CloverInt).value >= o2.(CloverInt).value)}
+		return (o1.(CloverInt).value < o2.(CloverInt).value)
 	case b1 == b2:
-		return CloverBool{(o1.(CloverFloat).value >= o2.(CloverFloat).value)}
+		return (o1.(CloverFloat).value < o2.(CloverFloat).value)
 	case b1:
-		return CloverBool{(float64(o1.(CloverInt).value) >= o2.(CloverFloat).value)}
+		return (float64(o1.(CloverInt).value) < o2.(CloverFloat).value)
 	case b2:
-		return CloverBool{(o1.(CloverFloat).value >= float64(o2.(CloverInt).value))}
+		return (o1.(CloverFloat).value < float64(o2.(CloverInt).value))
+	case b3 && b4:
+		return (o1.(CloverString).value < (o2.(CloverString).value))
+	}
+	return false
+}
+
+
+
+func Gre(objs ...CloverObj) CloverObj {
+	res := true
+	for i, v := range objs {
+		if !res {
+			return CloverBool{false}
+		}
+		if i < len(objs) - 1 {
+			res = greer(v, objs[i+1])
+		} else {
+			return CloverBool{res}
+		}
 	}
 	return CloverString{"Error!"}
+}
+
+func greer(o1, o2 CloverObj) bool {
+	b1 := intp(o1)
+	b2 := intp(o2)
+	b3 := strp(o1)
+	b4 := strp(o2)
+	switch {
+	case b1 && b2:
+		return (o1.(CloverInt).value >= o2.(CloverInt).value)
+	case b1 == b2:
+		return (o1.(CloverFloat).value >= o2.(CloverFloat).value)
+	case b1:
+		return (float64(o1.(CloverInt).value) >= o2.(CloverFloat).value)
+	case b2:
+		return (o1.(CloverFloat).value >= float64(o2.(CloverInt).value))
+	case b3 && b4:
+		return (o1.(CloverString).value >= (o2.(CloverString).value))
+	}
+	return false
 }
 
 func Lee(objs ...CloverObj) CloverObj {
-	o1 := objs[0]
-	o2 := objs[1]
-	b1 := intp(o1)
-	b2 := intp(o2)
-	switch {
-	case b1 && b2:
-		return CloverBool{(o1.(CloverInt).value <= o2.(CloverInt).value)}
-	case b1 == b2:
-		return CloverBool{(o1.(CloverFloat).value <= o2.(CloverFloat).value)}
-	case b1:
-		return CloverBool{(float64(o1.(CloverInt).value) <= o2.(CloverFloat).value)}
-	case b2:
-		return CloverBool{(o1.(CloverFloat).value <= float64(o2.(CloverInt).value))}
+	res := true
+	for i, v := range objs {
+		if !res {
+			return CloverBool{false}
+		}
+		if i < len(objs) - 1 {
+			res = leeer(v, objs[i+1])
+		} else {
+			return CloverBool{res}
+		}
 	}
 	return CloverString{"Error!"}
+}
+
+func leeer(o1, o2 CloverObj) bool {
+	b1 := intp(o1)
+	b2 := intp(o2)
+	b3 := strp(o1)
+	b4 := strp(o2)
+	switch {
+	case b1 && b2:
+		return (o1.(CloverInt).value <= o2.(CloverInt).value)
+	case b1 == b2:
+		return (o1.(CloverFloat).value <= o2.(CloverFloat).value)
+	case b1:
+		return (float64(o1.(CloverInt).value) <= o2.(CloverFloat).value)
+	case b2:
+		return (o1.(CloverFloat).value <= float64(o2.(CloverInt).value))
+	case b3 && b4:
+		return (o1.(CloverString).value <= (o2.(CloverString).value))
+	}
+	return false
 }
 
 
