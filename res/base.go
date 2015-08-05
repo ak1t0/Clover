@@ -131,8 +131,14 @@ func muler(o1, o2 CloverObj) CloverObj {
 
 // bool
 func And(objs ...CloverObj) CloverObj {
-	o1 := objs[0]
-	o2 := objs[1]
+	res := objs[0]
+	for _, v := range objs {
+		res = ander(v, res)
+	}
+	return res
+}
+
+func ander(o1, o2 CloverObj) CloverObj {
 	v1 := o1.(CloverBool).value
 	v2 := o2.(CloverBool).value
 	o := CloverBool{v1 && v2}
@@ -140,8 +146,14 @@ func And(objs ...CloverObj) CloverObj {
 }
 
 func Or(objs ...CloverObj) CloverObj {
-	o1 := objs[0]
-	o2 := objs[1]
+	res := objs[0]
+	for _, v := range objs {
+		res = orer(v, res)
+	}
+	return res
+}
+
+func orer(o1, o2 CloverObj) CloverObj {
 	v1 := o1.(CloverBool).value
 	v2 := o2.(CloverBool).value
 	o := CloverBool{v1 || v2}
@@ -172,25 +184,34 @@ func intp(o1 CloverObj) bool {
 }
 
 func Eq(objs ...CloverObj) CloverObj {
-	o1 := objs[0]
-	o2 := objs[1]
+  res := true
+	init := objs[0]
+	for _, v := range objs {
+		if res {
+			res = eqer(v, init)
+		} else {
+			return CloverBool{false}
+		}
+	}
+	return CloverBool{res}
+}
+
+func eqer(o1, o2 CloverObj) bool {
 	switch o1.(type) {
 		case CloverInt:
-			return CloverBool{(o1.(CloverInt).value == o2.(CloverInt).value)}
+			return (o1.(CloverInt).value == o2.(CloverInt).value)
 		case CloverFloat:
-			return CloverBool{(o1.(CloverFloat).value == o2.(CloverFloat).value)}
+			return (o1.(CloverFloat).value == o2.(CloverFloat).value)
 		case CloverString:
-			return CloverBool{(o1.(CloverString).value == o2.(CloverString).value)}
+			return (o1.(CloverString).value == o2.(CloverString).value)
 		case CloverBool:
-			return CloverBool{(o1.(CloverBool).value == o2.(CloverBool).value)}
+			return (o1.(CloverBool).value == o2.(CloverBool).value)
 	}
-	return CloverString{"Error!"}
+	return false
 }
 
 func Neq(objs ...CloverObj) CloverObj {
-	o1 := objs[0]
-	o2 := objs[1]
-	return Not(Eq(o1, o2))
+	return Not(Eq(objs...))
 }
 
 func Gr(objs ...CloverObj) CloverObj {
