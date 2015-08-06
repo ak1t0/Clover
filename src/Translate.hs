@@ -85,7 +85,10 @@ generateFuncBodyArgs (Int x) = "CloverInt{" ++ (show x) ++ "}"
 generateFuncBodyArgs (Float x) = "CloverFloat{" ++ (show x) ++ "}"
 generateFuncBodyArgs (String x) = "CloverString{" ++ (show x) ++ "}"
 generateFuncBodyArgs (Symbol x) = symbolToFunc x
-generateFuncBodyArgs (List ((Symbol "if"):xs)) = "if"
+generateFuncBodyArgs (List ((Symbol "if"):xs)) =
+  "If" ++ (parenter $ (generateFuncBodyArgs $ head xs) ++ ", " ++
+                      (lambdanize $ generateFuncBodyArgs $ xs !! 1) ++ ", " ++
+                      (lambdanize $ generateFuncBodyArgs $ last xs))
 generateFuncBodyArgs (List (x:xs)) =
   (generateFuncBodyArgs x) ++
   (parenter $ init $ unwords $ map (\x -> (generateFuncBodyArgs x) ++ ",") xs)
@@ -121,6 +124,10 @@ addIndexToEnd strs = interjoin strs (map show [0..(length(strs) - 1)])
 interjoin :: [String] -> [String] -> [String]
 interjoin [] [] = []
 interjoin (x:xs) (y:ys) = [x ++ y] ++ (interjoin xs ys)
+
+lambdanize :: String -> String
+lambdanize x = "func(...CloverObj) CloverObj {return " ++ x ++ "}"
+
 
 takeVector :: Clo -> [Clo]
 takeVector (Vector x) = x

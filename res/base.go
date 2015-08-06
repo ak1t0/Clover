@@ -176,14 +176,24 @@ func Not(objs ...CloverObj) CloverObj {
 }
 
 // util
-func println(objs ...CloverObj) {
+func println(objs ...CloverObj) CloverObj {
 	for _, v := range objs {
 		fmt.Println(v.ShowValue())
 		}
+	return CloverNil{0}
 }
 
-func intp(o1 CloverObj) bool {
-	switch o1.(type) {
+func boolp(o CloverObj) bool {
+	switch o.(type) {
+	case CloverBool:
+		return true
+	default:
+		return false
+	}
+}
+
+func intp(o CloverObj) bool {
+	switch o.(type) {
 	case CloverInt:
 		return true
 	default:
@@ -191,9 +201,18 @@ func intp(o1 CloverObj) bool {
 	}
 }
 
-func strp(o1 CloverObj) bool {
-	switch o1.(type) {
+func strp(o CloverObj) bool {
+	switch o.(type) {
 	case CloverString:
+		return true
+	default:
+		return false
+	}
+}
+
+func nilp(o CloverObj) bool {
+	switch o.(type) {
+	case CloverNil:
 		return true
 	default:
 		return false
@@ -380,8 +399,24 @@ func tes(x, y interface{}) CloverObj {
 	return Plus(v1, v2)
 }
 
-func If(b CloverBool, t, f func(...CloverObj) CloverObj) CloverObj {
-	return CloverBool{true}
+func If(b CloverObj, t, f func(...CloverObj) CloverObj) CloverObj {
+	var r1, r2 bool
+	r1 = boolp(b)
+	r2 = nilp(b)
+	if r1 {
+		if b.(CloverBool).value {
+			return t()
+		} else {
+			return f()
+		}
+	} else {
+		if r2 {
+			return f()
+		} else {
+			return t()
+		}
+	}
+	return CloverString{"Error!"}
 }
 
 /*
