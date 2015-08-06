@@ -195,6 +195,13 @@ func println(objs ...CloverObj) CloverObj {
 	return CloverNil{0}
 }
 
+func print(objs ...CloverObj) CloverObj {
+	for _, v := range objs {
+		fmt.Print(v.ShowValue())
+		}
+	return CloverNil{0}
+}
+
 func boolp(o CloverObj) bool {
 	switch o.(type) {
 	case CloverBool:
