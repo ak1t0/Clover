@@ -85,6 +85,9 @@ generateFuncBodyArgs (Int x) = "CloverInt{" ++ (show x) ++ "}"
 generateFuncBodyArgs (Float x) = "CloverFloat{" ++ (show x) ++ "}"
 generateFuncBodyArgs (String x) = "CloverString{" ++ (show x) ++ "}"
 generateFuncBodyArgs (Symbol x) = symbolToFunc x
+generateFuncBodyArgs (Vector x) =
+  "CloverVector{[]CloverObj{" ++
+  (init $ unwords $ map (\x -> (generateFuncBodyArgs x) ++ ",") x) ++ "}}"
 generateFuncBodyArgs (List ((Symbol "if"):xs)) =
   "If" ++ (parenter $ (generateFuncBodyArgs $ head xs) ++ ", " ++
                       (lambdanize $ generateFuncBodyArgs $ xs !! 1) ++ ", " ++

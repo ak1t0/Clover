@@ -24,6 +24,10 @@ type CloverNil struct {
 	value int
 }
 
+type CloverVector struct {
+	value []CloverObj
+}
+
 type CloverObj interface {
 	ShowValue() string
 }
@@ -48,6 +52,14 @@ func (s CloverNil) ShowValue() string {
 	return "nil"
 }
 
+func (s CloverVector) ShowValue() string {
+	vs := s.value
+	r := make([]string, len(vs))
+	for i, v := range vs {
+		r[i] = v.ShowValue()
+	}
+	return fmt.Sprint(r)
+}
 // built-in functions
 // int
 func Plus(objs ...CloverObj) CloverObj {
