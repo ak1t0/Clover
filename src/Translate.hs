@@ -79,11 +79,12 @@ generateFuncMainBody body =
 -- AST in function args to String
 --
 generateFuncBodyArgs :: Clo -> String
-generateFuncBodyArgs (Symbol x) = symbolToFunc x
+generateFuncBodyArgs (Symbol "nil") = "CloverNil{0}"
 generateFuncBodyArgs (Bool x) = "CloverBool{" ++ (map toLower (show x)) ++ "}"
 generateFuncBodyArgs (Int x) = "CloverInt{" ++ (show x) ++ "}"
 generateFuncBodyArgs (Float x) = "CloverFloat{" ++ (show x) ++ "}"
 generateFuncBodyArgs (String x) = "CloverString{" ++ (show x) ++ "}"
+generateFuncBodyArgs (Symbol x) = symbolToFunc x
 generateFuncBodyArgs (List ((Symbol "if"):xs)) = "if"
 generateFuncBodyArgs (List (x:xs)) =
   (generateFuncBodyArgs x) ++

@@ -20,6 +20,10 @@ type CloverString struct {
 	value string
 }
 
+type CloverNil struct {
+	value int
+}
+
 type CloverObj interface {
 	ShowValue() string
 }
@@ -38,6 +42,10 @@ func (s CloverBool) ShowValue() string {
 
 func (s CloverString) ShowValue() string {
 	return fmt.Sprint(s.value)
+}
+
+func (s CloverNil) ShowValue() string {
+	return "nil"
 }
 
 // built-in functions
