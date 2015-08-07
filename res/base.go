@@ -28,6 +28,10 @@ type CloverVector struct {
 	value []CloverObj
 }
 
+type CloverFunc struct {
+	value func (...CloverObj) CloverObj
+}
+
 type CloverObj interface {
 	ShowValue() string
 }
@@ -59,6 +63,10 @@ func (s CloverVector) ShowValue() string {
 		r[i] = v.ShowValue()
 	}
 	return fmt.Sprint(r)
+}
+
+func (s CloverFunc) ShowValue() string {
+	return "#function"
 }
 // built-in functions
 // int
