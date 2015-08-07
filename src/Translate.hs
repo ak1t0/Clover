@@ -68,39 +68,36 @@ generateFuncBody :: Clo -> Clo -> String
 generateFuncBody args body =
   "{\n\t" ++
   generateFuncArgs args ++
-  "v := " ++ (generateFuncBodyArgs body) ++ "\n" ++
+  "v := " ++ (astBodyToString body) ++ "\n" ++
   "\t" ++ "return v" ++ "\n" ++
   "}"
 
 generateFuncMainBody :: Clo -> String
 generateFuncMainBody body =
-  "{\n\t" ++ (generateFuncBodyArgs body) ++ "\n" ++ "}"
+  "{\n\t" ++ (astBodyToString body) ++ "\n" ++ "}"
 
 -- AST in function args to String
 --
-generateFuncBodyArgs :: Clo -> String
-generateFuncBodyArgs (Symbol "nil") = "CloverNil{0}"
-generateFuncBodyArgs (Bool x) = "CloverBool{" ++ (map toLower (show x)) ++ "}"
-generateFuncBodyArgs (Int x) = "CloverInt{" ++ (show x) ++ "}"
-generateFuncBodyArgs (Float x) = "CloverFloat{" ++ (show x) ++ "}"
-generateFuncBodyArgs (String x) = "CloverString{" ++ (show x) ++ "}"
-generateFuncBodyArgs (Symbol x) = symbolToFunc x
-generateFuncBodyArgs (Vector x) =
-  "CloverVector{[]CloverObj{" ++
-  (init $ unwords $ map (\x -> (generateFuncBodyArgs x) ++ ",") x) ++ "}}"
-generateFuncBodyArgs (List ((Symbol "if"):xs)) =
-  "If" ++ (parenter $ (generateFuncBodyArgs $ head xs) ++ ", " ++
-                      (lambdanize $ generateFuncBodyArgs $ xs !! 1) ++ ", " ++
-                      (lambdanize $ generateFuncBodyArgs $ last xs))
-generateFuncBodyArgs (List (x:xs)) =
-  (generateFuncBodyArgs x) ++
-  (parenter $ init $ unwords $ map (\x -> (generateFuncBodyArgs x) ++ ",") xs)
-
-generateIfFunc :: Clo -> String
-generateIfFunc x = "x"
---  where b = head x
---        t = head $ tail x
---        f = last x
+astBodyToString :: Clo -> String
+astBodyToString (Symbol "nil") = "CloverNil{0}"
+astBodyToString (Bool x) = "CloverBool{" ++ (map toLower (show x)) ++ "}"
+astBodyToString (Int x) = "CloverInt{" ++ (show x) ++ "}"
+astBodyToString (Float x) = "CloverFloat{" ++ (show x) ++ "}"
+astBodyToString (String x) = "CloverString{" ++ (show x) ++ "}"
+astBodyToString (Symbol x) = symbolToFunc x
+astBodyToString (Vector x) =
+  "CloverVector{[]CloverObj{" ++ (commaer $ map astBodyToString x) ++ "}}"
+-- spcial form
+astBodyToString (List ((Symbol "if"):xs)) =
+  "If" ++ (parenter $ commaer [b, t, f])
+  where
+    xs' = map astBodyToString xs
+    b = head xs'
+    t = lambdanize $ head $ tail xs'
+    f = lambdanize $ last xs'
+-- List to func(args...)
+astBodyToString (List (x:xs)) =
+  (astBodyToString x) ++ (parenter $ commaer $ map astBodyToString xs)
 
 -- for built-in function
 symbolToFunc :: String -> String
@@ -121,6 +118,9 @@ symbolToFunc s = case s of
 parenter :: String -> String
 parenter s = "(" ++ s ++ ")"
 
+commaer :: [String] -> String
+commaer s = init $ unwords $ map (++ ",") s
+
 addIndexToEnd :: [String] -> [String]
 addIndexToEnd strs = interjoin strs (map show [0..(length(strs) - 1)])
 
@@ -130,7 +130,6 @@ interjoin (x:xs) (y:ys) = [x ++ y] ++ (interjoin xs ys)
 
 lambdanize :: String -> String
 lambdanize x = "func(...CloverObj) CloverObj {return " ++ x ++ "}"
-
 
 takeVector :: Clo -> [Clo]
 takeVector (Vector x) = x
