@@ -28,9 +28,7 @@ type CloverVector struct {
 	value []CloverObj
 }
 
-type CloverFunc struct {
-	value func (...CloverObj) CloverObj
-}
+type CloverFunc func(...CloverObj) CloverObj
 
 type CloverObj interface {
 	ShowValue() string
@@ -195,57 +193,7 @@ func Not(objs ...CloverObj) CloverObj {
 	return r
 }
 
-// util
-func println(objs ...CloverObj) CloverObj {
-	for _, v := range objs {
-		fmt.Println(v.ShowValue())
-		}
-	return CloverNil{0}
-}
-
-func print(objs ...CloverObj) CloverObj {
-	for _, v := range objs {
-		fmt.Print(v.ShowValue())
-		}
-	return CloverNil{0}
-}
-
-func boolp(o CloverObj) bool {
-	switch o.(type) {
-	case CloverBool:
-		return true
-	default:
-		return false
-	}
-}
-
-func intp(o CloverObj) bool {
-	switch o.(type) {
-	case CloverInt:
-		return true
-	default:
-		return false
-	}
-}
-
-func strp(o CloverObj) bool {
-	switch o.(type) {
-	case CloverString:
-		return true
-	default:
-		return false
-	}
-}
-
-func nilp(o CloverObj) bool {
-	switch o.(type) {
-	case CloverNil:
-		return true
-	default:
-		return false
-	}
-}
-
+// comparsion operator
 func Eq(objs ...CloverObj) CloverObj {
   res := true
 	init := objs[0]
@@ -419,6 +367,59 @@ func leeer(o1, o2 CloverObj) bool {
 	return false
 }
 
+// util
+func println(objs ...CloverObj) CloverObj {
+	for _, v := range objs {
+		fmt.Println(v.ShowValue())
+		}
+	return CloverNil{0}
+}
+
+func print(objs ...CloverObj) CloverObj {
+	for _, v := range objs {
+		fmt.Print(v.ShowValue())
+		}
+	return CloverNil{0}
+}
+
+func boolp(o CloverObj) bool {
+	switch o.(type) {
+	case CloverBool:
+		return true
+	default:
+		return false
+	}
+}
+
+func intp(o CloverObj) bool {
+	switch o.(type) {
+	case CloverInt:
+		return true
+	default:
+		return false
+	}
+}
+
+func strp(o CloverObj) bool {
+	switch o.(type) {
+	case CloverString:
+		return true
+	default:
+		return false
+	}
+}
+
+func nilp(o CloverObj) bool {
+	switch o.(type) {
+	case CloverNil:
+		return true
+	default:
+		return false
+	}
+}
+
+
+
 
 func tes(x, y interface{}) CloverObj {
 	v1 := x.(CloverInt)
@@ -444,6 +445,15 @@ func If(b CloverObj, t, f func(...CloverObj) CloverObj) CloverObj {
 		}
 	}
 	return CloverString{"Error!"}
+}
+
+func Map (objs ...CloverObj) CloverObj {
+	f := objs[0].(CloverFunc)
+	coll := objs[1].(CloverVector).value
+	for i, v := range coll {
+		coll[i] = f(v)
+	}
+	return CloverVector{coll}
 }
 
 /*
