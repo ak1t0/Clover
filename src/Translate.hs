@@ -51,7 +51,7 @@ writeTransedFilei path target = do
 -- code generation
 generateFunc :: Clo -> Clo -> Clo -> String
 generateFunc fname args body =
-  "func " ++ (takeSymbol fname) ++ "(objs ...CloverObj) CloverObj " ++
+  "func " ++ (takeSymbol fname) ++ "(o ...interface{}) CloverObj " ++
   (generateFuncBody args body)
 
 generateFuncMain :: Clo -> String
@@ -60,7 +60,7 @@ generateFuncMain body =
 
 generateFuncArgs :: Clo -> String
 generateFuncArgs args =
-  foldr (++) "" $
+  foldl (++) "objs := preprocess(o)\n\t" $
   map (++ "]\n\t") $ addIndexToEnd $ map (++ " := objs[") $
   map takeSymbol $ takeVector args
 
@@ -129,7 +129,7 @@ interjoin [] [] = []
 interjoin (x:xs) (y:ys) = [x ++ y] ++ (interjoin xs ys)
 
 lambdanize :: String -> String
-lambdanize x = "func(...CloverObj) CloverObj {return " ++ x ++ "}"
+lambdanize x = "func(...interface{}) CloverObj {return " ++ x ++ "}"
 
 takeVector :: Clo -> [Clo]
 takeVector (Vector x) = x

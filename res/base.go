@@ -28,7 +28,9 @@ type CloverVector struct {
 	value []CloverObj
 }
 
-type CloverFunc func(...CloverObj) CloverObj
+type CloverFunc struct {
+	value func(...interface{}) CloverObj
+}
 
 type CloverObj interface {
 	ShowValue() string
@@ -68,7 +70,8 @@ func (s CloverFunc) ShowValue() string {
 }
 // built-in functions
 // int
-func Plus(objs ...CloverObj) CloverObj {
+func Plus(o ...interface{}) CloverObj {
+	objs := preprocess(o)
 	init := CloverInt{0}
 	var sum CloverObj
 	for i, v := range objs {
@@ -97,7 +100,8 @@ func pluser(o1, o2 CloverObj) CloverObj {
 	return CloverString{"Error!"}
 }
 
-func Minus(objs ...CloverObj) CloverObj {
+func Minus(o ...interface{}) CloverObj {
+	objs := preprocess(o)
 	init := CloverInt{0}
 	var sum CloverObj
 	for i, v := range objs {
@@ -126,7 +130,8 @@ func minuser(o1, o2 CloverObj) CloverObj {
 	return CloverString{"Error!"}
 }
 
-func Mul(objs ...CloverObj) CloverObj {
+func Mul(o ...interface{}) CloverObj {
+	objs := preprocess(o)
 	init := CloverInt{1}
 	var sum CloverObj
 	for i, v := range objs {
@@ -156,7 +161,8 @@ func muler(o1, o2 CloverObj) CloverObj {
 }
 
 // bool
-func And(objs ...CloverObj) CloverObj {
+func And(o ...interface{}) CloverObj {
+	objs := preprocess(o)
 	res := objs[0]
 	for _, v := range objs {
 		res = ander(v, res)
@@ -171,7 +177,8 @@ func ander(o1, o2 CloverObj) CloverObj {
 	return o
 }
 
-func Or(objs ...CloverObj) CloverObj {
+func Or(o ...interface{}) CloverObj {
+	objs := preprocess(o)
 	res := objs[0]
 	for _, v := range objs {
 		res = orer(v, res)
@@ -186,15 +193,17 @@ func orer(o1, o2 CloverObj) CloverObj {
 	return o
 }
 
-func Not(objs ...CloverObj) CloverObj {
-	o := objs[0]
-	v := o.(CloverBool).value
+func Not(o ...interface{}) CloverObj {
+	objs := preprocess(o)
+	t := objs[0]
+	v := t.(CloverBool).value
 	r := CloverBool{!v}
 	return r
 }
 
 // comparsion operator
-func Eq(objs ...CloverObj) CloverObj {
+func Eq(o ...interface{}) CloverObj {
+	objs := preprocess(o)
   res := true
 	init := objs[0]
 	for _, v := range objs {
@@ -221,11 +230,12 @@ func eqer(o1, o2 CloverObj) bool {
 	return false
 }
 
-func Neq(objs ...CloverObj) CloverObj {
-	return Not(Eq(objs...))
+func Neq(o ...interface{}) CloverObj {
+	return Not(Eq(o))
 }
 
-func Gr(objs ...CloverObj) CloverObj {
+func Gr(o ...interface{}) CloverObj {
+	objs := preprocess(o)
 	res := true
 	for i, v := range objs {
 		if !res {
@@ -260,7 +270,8 @@ func grer(o1, o2 CloverObj) bool {
 	return false
 }
 
-func Le(objs ...CloverObj) CloverObj {
+func Le(o ...interface{}) CloverObj {
+	objs := preprocess(o)
 	res := true
 	for i, v := range objs {
 		if !res {
@@ -297,7 +308,8 @@ func leer(o1, o2 CloverObj) bool {
 
 
 
-func Gre(objs ...CloverObj) CloverObj {
+func Gre(o ...interface{}) CloverObj {
+	objs := preprocess(o)
 	res := true
 	for i, v := range objs {
 		if !res {
@@ -332,7 +344,8 @@ func greer(o1, o2 CloverObj) bool {
 	return false
 }
 
-func Lee(objs ...CloverObj) CloverObj {
+func Lee(o ...interface{}) CloverObj {
+	objs := preprocess(o)
 	res := true
 	for i, v := range objs {
 		if !res {
@@ -368,18 +381,43 @@ func leeer(o1, o2 CloverObj) bool {
 }
 
 // util
-func println(objs ...CloverObj) CloverObj {
+func println(o ...interface{}) CloverObj {
+	objs := preprocess(o)
 	for _, v := range objs {
 		fmt.Println(v.ShowValue())
 		}
 	return CloverNil{0}
 }
 
-func print(objs ...CloverObj) CloverObj {
+func print(o ...interface{}) CloverObj {
+	objs := preprocess(o)
 	for _, v := range objs {
 		fmt.Print(v.ShowValue())
 		}
 	return CloverNil{0}
+}
+
+// internal
+
+func preprocess(o []interface{}) []CloverObj {
+	r := make([]CloverObj, len(o))
+	for i, v := range o {
+		switch o[i].(type) {
+		case CloverInt:
+			r[i] = v.(CloverInt)
+		case CloverFloat:
+			r[i] = v.(CloverFloat)
+		case CloverString:
+			r[i] = v.(CloverString)
+		case CloverNil:
+			r[i] = v.(CloverNil)
+		case func(...interface{}) CloverObj:
+			r[i] = CloverFunc{v.(func(...interface{}) CloverObj)}
+		default:
+			r[i] = v.(CloverObj)
+		}
+	}
+	return r
 }
 
 func boolp(o CloverObj) bool {
@@ -427,7 +465,7 @@ func tes(x, y interface{}) CloverObj {
 	return Plus(v1, v2)
 }
 
-func If(b CloverObj, t, f func(...CloverObj) CloverObj) CloverObj {
+func If(b CloverObj, t, f func(...interface{}) CloverObj) CloverObj {
 	var r1, r2 bool
 	r1 = boolp(b)
 	r2 = nilp(b)
@@ -445,15 +483,6 @@ func If(b CloverObj, t, f func(...CloverObj) CloverObj) CloverObj {
 		}
 	}
 	return CloverString{"Error!"}
-}
-
-func Map (objs ...CloverObj) CloverObj {
-	f := objs[0].(CloverFunc)
-	coll := objs[1].(CloverVector).value
-	for i, v := range coll {
-		coll[i] = f(v)
-	}
-	return CloverVector{coll}
 }
 
 /*
