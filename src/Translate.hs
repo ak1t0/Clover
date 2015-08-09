@@ -10,9 +10,8 @@ translate :: String -> IO String
 translate input =
   writeTransedFile "t.go" $ transClo $ parsePrim input
 
-translatei :: String -> IO String
-translatei input =
-  writeTransedFilei "repl.go" $ transClo $ parsePrim "(defn f-name [x y] (plus x y))"
+transadd :: String -> IO String
+transadd input = writeTransedFilep "t.go" $ transClo $ parsePrim input
 
 -- for confirm gorun build and run result
 gorun :: IO String
@@ -43,8 +42,8 @@ writeTransedFile path target = do
   writeFile path (base ++ target ++ "\n" ++ "\n")
   return "Success!!"
 
-writeTransedFilei :: FilePath -> String -> IO String
-writeTransedFilei path target = do
+writeTransedFilep :: FilePath -> String -> IO String
+writeTransedFilep path target = do
   appendFile path (target ++ "\n")
   return "Success!!"
 
