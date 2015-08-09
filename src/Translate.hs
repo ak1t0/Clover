@@ -51,8 +51,11 @@ writeTransedFilei path target = do
 -- code generation
 generateFunc :: Clo -> Clo -> Clo -> String
 generateFunc fname args body =
-  "func " ++ (takeSymbol fname) ++ "(o ...interface{}) CloverObj " ++
+  "var " ++ name ++ " CloverObj = CloverFunc{" ++ name ++ "Func}\n"++
+  "func " ++ (name ++ "Func") ++ "(o ...interface{}) CloverObj " ++
   (generateFuncBody args body)
+  where
+    name = takeSymbol fname
 
 generateFuncMain :: Clo -> String
 generateFuncMain body =
@@ -97,7 +100,8 @@ astBodyToString (List ((Symbol "if"):xs)) =
     f = lambdanize $ last xs'
 -- List to func(args...)
 astBodyToString (List (x:xs)) =
-  (astBodyToString x) ++ (parenter $ commaer $ map astBodyToString xs)
+  (astBodyToString x) ++ ".(CloverFunc).value" ++
+  (parenter $ commaer $ map astBodyToString xs)
 
 -- for built-in function
 symbolToFunc :: String -> String
