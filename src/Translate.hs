@@ -95,8 +95,13 @@ astBodyToString (List ((Symbol "if"):xs)) =
   where
     xs' = map astBodyToString xs
     b = head xs'
-    t = lambdanize $ head $ tail xs'
-    f = lambdanize $ last xs'
+    t = wrapByFunc $ head $ tail xs'
+    f = wrapByFunc $ last xs'
+astBodyToString (List ((Symbol "fn"):xs)) =
+  "CloverFunc{" ++ (addFnHead $ generateFuncBody args body) ++  "}"
+  where
+    args = head xs
+    body = head $ tail xs
 -- List to func(args...)
 astBodyToString (List (x:xs)) =
   (astBodyToString x) ++ ".(CloverFunc).value" ++
@@ -131,8 +136,11 @@ interjoin :: [String] -> [String] -> [String]
 interjoin [] [] = []
 interjoin (x:xs) (y:ys) = [x ++ y] ++ (interjoin xs ys)
 
-lambdanize :: String -> String
-lambdanize x = "func(...interface{}) CloverObj {return " ++ x ++ "}"
+wrapByFunc :: String -> String
+wrapByFunc x = "func(...interface{}) CloverObj {return " ++ x ++ "}"
+
+addFnHead :: String -> String
+addFnHead x = "func(o ...interface{}) CloverObj " ++ x
 
 takeVector :: Clo -> [Clo]
 takeVector (Vector x) = x
