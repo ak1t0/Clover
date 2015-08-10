@@ -5,6 +5,7 @@ import Syntax
 import Lexer
 import Parser
 import Translate
+import Interface
 
 main :: IO ()
 main = runInputT defaultSettings loop
