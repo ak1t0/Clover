@@ -471,6 +471,10 @@ func nilp(o CloverObj) bool {
 	}
 }
 
+func objnize(o CloverFunc) CloverObj {
+	return o
+}
+
 func If(b CloverObj, t, f func(...interface{}) CloverObj) CloverObj {
 	var r1, r2 bool
 	r1 = boolp(b)

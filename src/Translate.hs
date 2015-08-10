@@ -98,7 +98,7 @@ astBodyToString (List ((Symbol "if"):xs)) =
     t = wrapByFunc $ head $ tail xs'
     f = wrapByFunc $ last xs'
 astBodyToString (List ((Symbol "fn"):xs)) =
-  "CloverFunc{" ++ (addFnHead $ generateFuncBody args body) ++  "}"
+  "objnize(CloverFunc{" ++ (addFnHead $ generateFuncBody args body) ++  "})"
   where
     args = head xs
     body = head $ tail xs
