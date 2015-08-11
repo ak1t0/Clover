@@ -5,9 +5,10 @@ reader "" res p = res ++ (show p)
 reader t res p = reader (tail t) (res ++ [ch]) (check ch p)
   where
     ch = head t
-
+-- chekc
 check :: Char -> [Int] -> [Int]
 check ch [l, r] = case ch of
   '(' -> [l+1, r]
   ')' -> [l, r+1]
   _ -> [l, r]
+a
