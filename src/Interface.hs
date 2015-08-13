@@ -55,18 +55,21 @@ reader str = if xs == ""
 passReader :: String -> [String]
 passReader str = filter (elem '(') $ map format $ reader str
 
-compile path = do
-  x <- readFile path
+compile :: String -> String -> IO ()
+compile target output = do
+  x <- readFile target
   let y = cleanSource x
   let z = passReader y
   let c = nub $ map (checkParent 0) z
   if c == [True]
-    then writeTransedFile "ttt.go" $ foldr (++) "" $ map ((++ "\n\n") . transClo . parsePrim) z
-    else return "Error"
-
-view :: [String] -> String
-view [x,y] = x ++ "!!!!" ++ y
-view [x,y,z] = x ++ "!!!!" ++ y ++ "!!!!" ++ z
+    then do
+      irpath <- writeTransedFile "ir.go" $ foldr (++) "" $ map ((++ "\n\n") . transClo . parsePrim) z
+      r <- gobuild output irpath
+      if r == ""
+        then putStrLn "Success"
+        else putStrLn $ "go compile error: \n" ++ r
+    else do
+      putStrLn "parse error: check source code"
 
 format :: String -> String
 format str = dropWhile spaceOrNewline str

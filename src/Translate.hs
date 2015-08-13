@@ -18,7 +18,9 @@ gorun :: IO String
 gorun = readProcess "go" ["run", "t.go"] []
 
 gobuild :: String -> String -> IO String
-gobuild file source = readProcess "go" ["build", "-o", file, source] []
+gobuild file source = do
+  (_, _, e) <- readProcessWithExitCode "go" ["build", "-o", file, source] []
+  return e
 
 -- AST translating function
 transClo :: Either a Clo -> String
@@ -40,7 +42,7 @@ writeTransedFile :: FilePath -> String -> IO String
 writeTransedFile path target = do
   base <- readFile "res/base.go"
   writeFile path (base ++ target ++ "\n" ++ "\n")
-  return "Success!!"
+  return path
 
 writeTransedFilep :: FilePath -> String -> IO String
 writeTransedFilep path target = do
