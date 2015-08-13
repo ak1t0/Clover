@@ -111,7 +111,6 @@ parseSymbolicOp = do
     '-' -> Symbol "-"
     '*' -> Symbol "*"
 
-
 -- Clover Escaped Character
 -- \n, \\, \"
 escapedChar :: Parser Char

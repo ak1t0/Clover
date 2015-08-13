@@ -21,7 +21,6 @@ option = Option
     &= summary "Clover version 1.0.0"
     &= program "clover"
 
-
 main :: IO ()
 main = do
   opt <- cmdArgs option

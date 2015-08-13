@@ -6,10 +6,13 @@ import Parser
 import Data.Char
 import System.Process
 
-translate :: String -> IO String
-translate input =
-  writeTransedFile "t.go" $ transClo $ parsePrim input
+-- function for debug
 
+-- translate and overwrite
+translate :: String -> IO String
+translate input = writeTransedFile "t.go" $ transClo $ parsePrim input
+
+-- translate and append
 transadd :: String -> IO String
 transadd input = writeTransedFilep "t.go" $ transClo $ parsePrim input
 
@@ -17,6 +20,7 @@ transadd input = writeTransedFilep "t.go" $ transClo $ parsePrim input
 gorun :: IO String
 gorun = readProcess "go" ["run", "t.go"] []
 
+-- use from compile
 gobuild :: String -> String -> IO String
 gobuild file source = do
   (_, _, e) <- readProcessWithExitCode "go" ["build", "-o", file, source] []
@@ -152,12 +156,3 @@ takeList (List x) = x
 
 takeSymbol :: Clo -> String
 takeSymbol (Symbol x) = x
-
-strClo :: Clo -> String
-strClo (Int i) = show i
-strClo (Float f) = show f
-strClo (Symbol s) = s
-strClo (Keyword s) = ":" ++ s
-strClo (String s) = show s
-strClo (List l) = "(" ++ unwords (map strClo l) ++ ")"
-strClo (Vector v) = "[" ++ unwords (map strClo v) ++ "]"

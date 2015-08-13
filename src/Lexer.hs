@@ -13,9 +13,6 @@ lexer = Token.makeTokenParser def
                 Token.reservedOpNames = []
                 }
 
--- emptyDef is embedded minimal LanguageDefinition
-
-
 -- embedded Parser by Parsec.Token
 
 integer :: Parser Integer
