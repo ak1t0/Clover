@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 -- The name of the package.
-name:                Clover
+name:                clover
 
 -- The package version.  See the Haskell package versioning policy (PVP)
 -- for standards guiding when and how versions should be incremented.
@@ -61,7 +61,8 @@ executable Clover
                        haskeline ,
                        parsec ,
                        transformers ,
-                       process
+                       process ,
+                       cmdargs
 
   -- Directories containing source files.
   hs-source-dirs:      src

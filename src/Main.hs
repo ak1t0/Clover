@@ -1,24 +1,26 @@
-import System.Console.Haskeline
-import Control.Monad.IO.Class
+{-# LANGUAGE DeriveDataTypeable #-}
 
-import Syntax
-import Lexer
-import Parser
-import Translate
-import Interface
+module Main where
+
+import System.Console.CmdArgs
+
+data Option = Option
+    { source :: String
+    , output :: String
+    } deriving (Show, Data, Typeable)
+
+option :: Option
+option = Option
+    { source = ""
+      &= help "source file name"
+    , output = "a.out"
+      &= help "executable file name"
+    }
+    &= summary "Clover version 1.0.0"
+    &= program "clover"
+
 
 main :: IO ()
-main = runInputT defaultSettings loop
-  where
-    loop :: InputT IO ()
-    loop = do
-      maybeinput <- getInputLine "> "
-      case maybeinput of
-        Nothing -> outputStrLn "Goodbye."
-        Just "quit" -> outputStrLn "Goodbye."
-        Just input -> do
-          x <- liftIO $ transadd input
-          outputStrLn x
-          loop
-          --return expression
-        -- (outputStrLn $ "Input was: " ++ (parseClover input)) >> loop
+main = do
+  opt <- cmdArgs option
+  print opt
