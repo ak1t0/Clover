@@ -4,6 +4,8 @@ module Main where
 
 import System.Console.CmdArgs
 
+import Interface
+
 data Option = Option
     { source :: String
     , output :: String
@@ -23,4 +25,8 @@ option = Option
 main :: IO ()
 main = do
   opt <- cmdArgs option
-  print opt
+  let s = source opt
+  let o = output opt
+  if s == ""
+    then putStrLn "source file is not given: use -s option"
+    else compile s o >>= putStr

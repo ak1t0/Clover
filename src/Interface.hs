@@ -55,7 +55,7 @@ reader str = if xs == ""
 passReader :: String -> [String]
 passReader str = filter (elem '(') $ map format $ reader str
 
-compile :: String -> String -> IO ()
+compile :: String -> String -> IO String
 compile target output = do
   x <- readFile target
   let y = cleanSource x
@@ -66,10 +66,10 @@ compile target output = do
       irpath <- writeTransedFile "ir.go" $ foldr (++) "" $ map ((++ "\n\n") . transClo . parsePrim) z
       r <- gobuild output irpath
       if r == ""
-        then putStrLn "Success"
-        else putStrLn $ "go compile error: \n" ++ r
-    else do
-      putStrLn "parse error: check source code"
+        then return ""
+        else return $ "go compile error: \n" ++ r ++ "\n"
+    else
+      return "parse error: check source code\n"
 
 format :: String -> String
 format str = dropWhile spaceOrNewline str
