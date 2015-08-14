@@ -15,7 +15,7 @@ option :: Option
 option = Option
     { source = ""
       &= help "source file name"
-    , output = "a.out"
+    , output = ""
       &= help "executable file name"
     }
     &= summary "Clover version 1.0.0"

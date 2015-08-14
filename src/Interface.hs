@@ -65,6 +65,11 @@ format str = dropWhile spaceOrNewline str
 spaceOrNewline :: Char -> Bool
 spaceOrNewline x = if (x == '\n') || (x == ' ') then True else False
 
+takeFileName :: String -> String
+takeFileName name = case (elemIndex '.' name) of
+  Just n -> take n name
+  Nothing -> name
+
 -- compile clo to executable file
 compile :: String -> String -> IO String
 compile target output = do
@@ -75,7 +80,7 @@ compile target output = do
   if c == [True]
     then do
       let ir = foldr (++) "" $ map ((++ "\n\n") . transClo . parsePrim) z
-      irpath <- writeTransedFile "ir.go" ir
+      irpath <- writeTransedFile ((takeFileName target) ++ ".go") ir
       r <- gobuild output irpath
       if r == ""
         then return ""
