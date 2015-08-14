@@ -2,6 +2,7 @@ module Interface where
 
 import Data.List
 import System.Process
+import System.Exit
 
 import Translate
 import Parser
@@ -81,6 +82,19 @@ generateGoOption o i = if o == ""
   then ["build", i]
   else ["build", "-o", o, i]
 
+xgobuild :: String -> String -> [String] -> IO String
+xgobuild file source xoption = do
+  e <- system $ xop ++ "go " ++ (foldr (++) "" (map (++ " ") op))
+  if e == ExitSuccess
+    then return ""
+    else return $ show e
+  where
+    xop = generateXOption xoption
+    op = generateGoOption file source
+
+generateXOption :: [String] -> String
+generateXOption [os, arch] = "GOOS=" ++ os ++ " " ++ "GOARCH=" ++ arch ++ " "
+
 -- compile clo to executable file
 compile :: String -> String -> IO String
 compile target output = do
@@ -95,6 +109,23 @@ compile target output = do
       r <- gobuild output irpath
       if r == ""
         then return ""
-        else return $ "go compile error: \n" ++ r ++ "\n"
+        else return $ "clover go compile error: \n" ++ r ++ "\n"
+    else
+      return "parse error: check source code\n"
+
+xcompile :: String -> String -> [String] -> IO String
+xcompile target output xoption = do
+  x <- readFile target
+  let y = cleanSource x
+  let z = passReader y
+  let c = nub $ map (checkParent 0) z
+  if c == [True]
+    then do
+      let ir = foldr (++) "" $ map ((++ "\n\n") . transClo . parsePrim) z
+      irpath <- writeTransedFile ((takeFileName target) ++ ".go") ir
+      r <- xgobuild output irpath xoption
+      if r == ""
+        then return ""
+        else return $ "clover go compile error: " ++ r ++ "\n"
     else
       return "parse error: check source code\n"

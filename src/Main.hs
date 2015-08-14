@@ -10,7 +10,7 @@ data Option = Option
     { source :: String
     , output :: String
     , xos :: String
-    , xbit :: String
+    , xarch :: String
     } deriving (Show, Data, Typeable)
 
 option :: Option
@@ -21,8 +21,8 @@ option = Option
       &= help "executable file name"
     , xos = ""
       &= help "xcompile target os"
-    , xbit = ""
-      &= help "xcompile target bit"
+    , xarch = ""
+      &= help "xcompile target arch"
     }
     &= summary "Clover version 1.0.0"
     &= program "clover"
@@ -33,13 +33,13 @@ main = do
   let s = source opt
   let o = output opt
   let xo = xos opt
-  let xb = xbit opt
-  if (xo == "" && xb == "")
+  let xa = xarch opt
+  if (xo == "" && xa == "")
     then
       if s == ""
         then putStrLn "source file is not given: use -s option"
         else compile s o >>= putStr
     else
-      if (xo == "" || xb == "")
-        then putStrLn "xcompile option is not correct: use --xos & --xbit"
-        else putStrLn "call compilex"
+      if (xo == "" || xa == "")
+        then putStrLn "xcompile option is not correct: use --xos & --xarch"
+        else xcompile s o [xo, xa] >>= putStr
