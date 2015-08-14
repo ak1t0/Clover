@@ -70,6 +70,11 @@ takeFileName name = case (elemIndex '.' name) of
   Just n -> take n name
   Nothing -> name
 
+gobuild :: String -> String -> IO String
+gobuild file source = do
+  (_, _, e) <- readProcessWithExitCode "go" (generateBuildOption file source) []
+  return e
+
 -- compile clo to executable file
 compile :: String -> String -> IO String
 compile target output = do

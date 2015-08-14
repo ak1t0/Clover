@@ -20,11 +20,8 @@ transadd input = writeTransedFilep "t.go" $ transClo $ parsePrim input
 gorun :: IO String
 gorun = readProcess "go" ["run", "t.go"] []
 
--- use from compile
-gobuild :: String -> String -> IO String
-gobuild file source = do
-  (_, _, e) <- readProcessWithExitCode "go" (generateBuildOption file source) []
-  return e
+
+-- function for code generation
 
 generateBuildOption :: String -> String -> [String]
 generateBuildOption o i = if o == ""
