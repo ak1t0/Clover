@@ -1,6 +1,7 @@
 module Interface where
 
 import Data.List
+import System.Process
 
 import Translate
 import Parser
@@ -72,8 +73,13 @@ takeFileName name = case (elemIndex '.' name) of
 
 gobuild :: String -> String -> IO String
 gobuild file source = do
-  (_, _, e) <- readProcessWithExitCode "go" (generateBuildOption file source) []
+  (_, _, e) <- readProcessWithExitCode "go" (generateGoOption file source) []
   return e
+
+generateGoOption :: String -> String -> [String]
+generateGoOption o i = if o == ""
+  then ["build", i]
+  else ["build", "-o", o, i]
 
 -- compile clo to executable file
 compile :: String -> String -> IO String
