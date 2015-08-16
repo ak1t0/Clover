@@ -1,5 +1,7 @@
-(defn plusfive [x]
-  (+ x 5))
+(defn hepta [x]
+  (/ (- (* 5 x x) (* 3 x)) 2))
+(defn hep [x]
+  (* 5 x x))
 
 (defn main []
-  (println (plusfive 9)))
+  (println (hepta 7)))

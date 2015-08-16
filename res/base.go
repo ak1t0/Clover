@@ -111,7 +111,7 @@ func MinusFunc(o ...interface{}) CloverObj {
 	var sum CloverObj
 	for i, v := range objs {
 		if i == 0 {
-			sum = minuser(init, v)
+			sum = minuser(v, init)
 		} else {
 		sum = minuser(sum, v)
 		}
