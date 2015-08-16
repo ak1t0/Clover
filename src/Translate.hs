@@ -121,6 +121,7 @@ symbolToFunc s = case s of
     "+" -> "Plus"
     "-" -> "Minus"
     "*" -> "Mul"
+    "/" -> "Div"
     "==" -> "Eq"
     "not" -> "Not"
     "and" -> "And"

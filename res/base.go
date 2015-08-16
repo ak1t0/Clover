@@ -73,6 +73,7 @@ func (s CloverFunc) ShowValue() string {
 var Plus CloverObj = CloverFunc{PlusFunc}
 var Minus CloverObj = CloverFunc{MinusFunc}
 var Mul CloverObj = CloverFunc{MulFunc}
+var Div CloverObj = CloverFunc{DivFunc}
 
 func PlusFunc(o ...interface{}) CloverObj {
 	objs := preprocess(o)
@@ -160,6 +161,36 @@ func muler(o1, o2 CloverObj) CloverObj {
 		return CloverFloat{(float64(o1.(CloverInt).value) * o2.(CloverFloat).value)}
 	case b2:
 		return CloverFloat{o1.(CloverFloat).value * (float64(o2.(CloverInt).value))}
+	}
+	return CloverString{"Error!"}
+}
+
+func DivFunc(o ...interface{}) CloverObj {
+	objs := preprocess(o)
+	init := CloverInt{1}
+	var sum CloverObj
+	for i, v := range objs {
+		if i == 0 {
+			sum = diver(v, init)
+		} else {
+		sum = diver(sum, v)
+		}
+	}
+	return sum
+}
+
+func diver(o1, o2 CloverObj) CloverObj {
+	b1 := intp(o1)
+	b2 := intp(o2)
+	switch {
+	case b1 && b2:
+		return CloverInt{(o1.(CloverInt).value / o2.(CloverInt).value)}
+	case b1 == b2:
+		return CloverFloat{(o1.(CloverFloat).value / o2.(CloverFloat).value)}
+	case b1:
+		return CloverFloat{(float64(o1.(CloverInt).value) / o2.(CloverFloat).value)}
+	case b2:
+		return CloverFloat{o1.(CloverFloat).value / (float64(o2.(CloverInt).value))}
 	}
 	return CloverString{"Error!"}
 }
