@@ -1,0 +1,5 @@
+(defn plusfive [x]
+  (+ x 5))
+
+(defn main []
+  (println (plusfive 9)))
