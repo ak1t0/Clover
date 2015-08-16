@@ -6,4 +6,3 @@ cabal.sandbox.config
 *.go
 *.out
 *.exe
-*.clo
