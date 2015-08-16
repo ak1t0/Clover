@@ -1,7 +1,6 @@
+
 (defn hepta [x]
   (/ (- (* 5 x x) (* 3 x)) 2))
-(defn hep [x]
-  (* 5 x x))
 
 (defn main []
   (println (hepta 7)))
