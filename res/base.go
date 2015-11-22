@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"image"
+	"image/jpeg"
+	"image/png"
+	"os"
 )
 
 type CloverInt struct {
@@ -32,6 +36,10 @@ type CloverFunc struct {
 	value func(...interface{}) CloverObj
 }
 
+type CloverImage struct {
+	value image.Image
+}
+
 type CloverObj interface {
 	ShowValue() string
 }
@@ -54,6 +62,10 @@ func (s CloverString) ShowValue() string {
 
 func (s CloverNil) ShowValue() string {
 	return "nil"
+}
+
+func (s CloverImage) ShowValue() string {
+	return "image"
 }
 
 func (s CloverVector) ShowValue() string {
@@ -525,6 +537,81 @@ func If(b CloverObj, t, f func(...interface{}) CloverObj) CloverObj {
 	}
 	return CloverString{"Error!"}
 }
+
+// image util
+var readPng CloverObj = CloverFunc{ReadPng}
+func ReadPng(o ...interface{}) CloverObj {
+	objs := preprocess(o)
+	var inFile *os.File
+  var img image.Image
+  var err error
+
+	if inFile, err = os.Open((objs[0].(CloverString).value) + ".png"); err != nil {
+		return CloverBool{false}
+	}
+	defer inFile.Close()
+
+	if img, err = png.Decode(inFile); err != nil {
+		return CloverBool{false}
+	}
+
+	return CloverImage{img}
+
+}
+
+var writeJpg CloverObj = CloverFunc{WriteJpg}
+func WriteJpg(o ...interface{}) CloverObj {
+	objs := preprocess(o)
+	var outFile *os.File
+  var err error
+
+	if outFile, err = os.Create(objs[0].(CloverString).value + ".jpg"); err != nil {
+			return CloverBool{false}
+    }
+
+	option := &jpeg.Options{Quality: objs[2].(CloverInt).value}
+
+	if err = jpeg.Encode(outFile, objs[1].(CloverImage).value, option); err != nil {
+        return CloverBool{false}
+    }
+
+	defer outFile.Close()
+
+	return CloverBool{true}
+
+}
+/*
+  var inFile *os.File
+	 var outFile *os.File
+	 var img image.Image
+	 var err error
+
+	 if inFile, err = os.Open("pkg.png"); err != nil {
+			 println("Error", err)
+			 return
+	 }
+
+	 defer inFile.Close()
+
+	 if img, err = png.Decode(inFile); err != nil {
+			 println("Error", err)
+			 return
+	 }
+
+	 if outFile, err = os.Create("pkg.jpg"); err != nil {
+			 println("Error", err)
+			 return
+	 }
+
+	 option := &jpeg.Options{Quality: 100}
+
+	 if err = jpeg.Encode(outFile, img, option); err != nil {
+	 //if err = jpeg.Encode(outFile, img, nil); err != nil {
+			 println()
+			 return
+	 }
+
+	 defer outFile.Close()
 
 /*
 func main() {

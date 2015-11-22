@@ -1,6 +1,1 @@
-
-(defn hepta [x]
-  (/ (- (* 5 x x) (* 3 x)) 2))
-
-(defn main []
-  (println (hepta 7)))
+(defn main [] (writeJpg "out" (readPng "D") 95))
