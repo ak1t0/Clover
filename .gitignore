@@ -6,4 +6,6 @@ cabal.sandbox.config
 *.go
 *.out
 *.exe
+*.png
+*.jpg
 *~
