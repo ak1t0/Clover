@@ -12,7 +12,7 @@ Clover requires Go(>= 1.4) and GHC(>= 7.10) and Cabal(>= 1.22).
 ## Usage
 
 
-    dist/build/clover/clover -s source output
+    dist/build/clover/clover -s source -o output
     dist/build/clover/clover --help
 
 
