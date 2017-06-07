@@ -1,0 +1,5 @@
+(defn heptagonal [n]
+  (/ (- (* n n 5) (* n 3)) 2))
+
+(defn main []
+  (println [(heptagonal 1) (heptagonal 2) (heptagonal 3)]))
